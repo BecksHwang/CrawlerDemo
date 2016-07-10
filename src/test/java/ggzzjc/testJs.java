@@ -1,0 +1,67 @@
+package ggzzjc;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
+import com.becks.service.PdfUrlGrapService;
+import com.becks.util.GrapMethodUtil;
+
+
+public class testJs {
+	static Logger logger = Logger.getLogger(PdfUrlGrapService.class);
+
+	public static void main(String[] args) throws MalformedURLException {
+
+		new Thread(new Runnable() {
+			public void run() {
+				try {
+					specialParseTarget("http://ircs.p5w.net/ircs/interaction/moreQuestionForGszz.do");
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
+
+	}
+
+	protected static void specialParseTarget(String url) throws MalformedURLException {
+
+		while (true) {
+			try {
+				Thread.sleep(3000L);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			String urlstr = url;
+			String html = null;
+			html = new com.becks.util.GrapMethodUtil().getStringByUrl(urlstr);
+			//html = new SpecialGrapMethodUtil().getStringByUrlChrome(urlstr);
+			System.out.println("*******************抓取中*******************");
+			// System.out.println(html);
+			if (com.becks.util.StringUtil.isNullOrEmpty(html)) {
+				System.out.println("没有抓取到内容！");
+				continue;
+			}
+			Document document = Jsoup.parse(html);
+			List<Element> elementList = document.getElementsByTag("a");
+			for (int e = 0; e < elementList.size(); e++) {
+				Element element = (Element) elementList.get(e);
+				String href = element.attr("href");
+				String title = element.text();
+				if (GrapMethodUtil.validCheck(title, href)) {
+					href = com.becks.util.GrapMethodUtil.buildURL(new URL(urlstr), href);
+					System.out.println("title=" + title);
+					System.out.println("URL=" + href);
+				}
+			}
+
+		}
+	}
+
+}

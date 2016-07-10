@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>个股追踪监测网站</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="css/pnotify.custom.min.css" rel="stylesheet"/>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript">
+        width_screen=screen.width;
+        height_screen=screen.height;
+        // alert(height_screen);
+    </script>
+    <style type="text/css">
+        body{
+            overflow-y:auto;
+        }
+        #myRow, #myRow1{
+            position:relative; z-index:1;
+            display:block; float:left;
+            height:750px;
+            width:width_screen;
+            overflow:auto;
+            overflow-x:hidden;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid" style="margin-top:0;">
+    <!-- <div class="row">
+      初始化信息条数：<input class="input-medium" type="text" ng-model="newInitInfoNum"> <button class="btn">查询</button>
+    </div> -->
+    <div class="row">
+        <div id="myRow" class="col-md-6 ajaxRow">
+            <div class="row" v-for="item in items" id="{{ item.id }}" track-by="$index">
+                <div class="row" style="margin-top:-45px;">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-4 text-center" style="margin-top: 50px;">
+                        <!-- <div>发布：2016-06-30 10:02:34</div> -->
+                        <div>抓取：{{ item.pickTime}}</div>
+                        <!-- <div>保存：2016-06-30 10:02:38</div>
+                        <div>时间间隔:4.5s</div> -->
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-9">
+                        <div class="panel panel-success">
+                            <div class="panel-body">
+                                <h4>
+                                    第{{ $index + 1 }}条
+                                    <button class="btn btn-md btn-info clipBtn" data-clipboard-action="copy" data-clipboard-target="{{'#title' + item.id }}">复制</button>
+                                </h4>
+                                <blockquote>
+                                    <a id="{{'title' + item.id }}" href="{{ item.url}}" target="_blank">
+                                        {{ item.title }}
+                                    </a>
+                                </blockquote>
+
+                                <div class="row">
+                                    <div class="col-md-8">
+                                    </div>
+                                    <div class="col-md-4 text-right">
+                                        <a href="{{ item.sourceUrl }}" target="_blank" >{{ item.source}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="myRow1" class="col-md-6">
+            <div class="row" v-for="item in items2" id="{{ item.id }}" track-by="$index">
+                <div class="row" style="margin-top:-45px;">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-4 text-center" style="margin-top: 50px;">
+                        <div>抓取：{{ item.pickTime}}</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-9">
+                        <div class="panel panel-success">
+                            <div class="panel-body">
+                                <h4>
+                                    第{{ $index + 1 }}条
+                                    <button class="btn btn-md btn-info clipBtn btn2" data-clipboard-action="copy" data-clipboard-target="{{'#title2' + item.id }}">复制</button>
+                                    <small>公司名称：{{ item.company }}</small>
+                                </h4>
+                                <blockquote>
+                                    <div id="{{'title2' + item.id }}">
+                                        问：{{ item.ask }}
+                                    </div></br>
+                                    <div id="{{'title' + item.id }}">
+                                        答：{{ item.answer }}
+                                    </div>
+                                </blockquote>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                    </div>
+                                    <div class="col-md-4 text-right">
+                                        <a href="{{ item.sourceUrl }}" target="_blank" >{{ item.source}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--          <button class="btn btn-md btn-info clipBtn btn2"><a href="#">回到顶部</a></button>
+         -->      </div>
+</div>
+<div id="newNotice"></div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="js/jquery-1.9.1.js"></script>
+<script src="js/jquery.noty.packaged.js"></script><!-- noty消息提醒 -->
+<script src="js/vue.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/clipboard.min.js"></script>
+<script src="js/index.js"></script>
+<script src="js/moment.js"></script>
+</body>
+</html>
