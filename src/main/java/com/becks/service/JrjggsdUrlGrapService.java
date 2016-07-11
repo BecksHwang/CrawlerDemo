@@ -33,7 +33,7 @@ import com.becks.util.RedisAPI;
 import com.becks.util.SendUrlUtil;
 
 /**
- * @Description: 互动问答网址任务抓取程序
+ * @Description: 金融界公告速递网址任务抓取程序
  * @author BecksHwang
  * @date
  */

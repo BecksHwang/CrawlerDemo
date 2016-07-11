@@ -13,11 +13,11 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class Page implements Serializable{
 
-	private int currentPage = 1;//��ǰҳ
-	private int pageSize = 20;//ÿҳ��С
-	private int totalRow;//������
-	private int totalPage;//��ҳ�� 
-	private int index;//ÿҳ��ʼ�����
+	private int currentPage = 1;
+	private int pageSize = 20;
+	private int totalRow;
+	private int totalPage; 
+	private int index;
 	
 	private List<? extends Object> items;
 	
@@ -49,7 +49,7 @@ public class Page implements Serializable{
 	}
 	
 	/**
-	 * ÿҳ��ʼ����
+	 * 
 	 * @return
 	 */
 	public int getIndex() {
@@ -59,14 +59,14 @@ public class Page implements Serializable{
 		this.index = index;
 	}
 	/**
-	 * ��ǰҳ��
+	 * 
 	 * @return
 	 */
 	public int getCurrentPage() {
 		return currentPage;
 	}
 	/**
-	 * ���ݵ�ǰҳ���Լ�����ҳ��ʼ�����
+	 * 
 	 * @param currentPage
 	 */
 	public void setCurrentPage(int currentPage) {
@@ -75,7 +75,7 @@ public class Page implements Serializable{
 	}
 	
 	/**
-	 * ÿҳ��С
+	 * 
 	 * @return
 	 */
 	public int getPageSize() {
@@ -85,7 +85,7 @@ public class Page implements Serializable{
 		this.pageSize = pageSize;
 	}
 	/**
-	 * ������
+	 * 
 	 * @return
 	 */
 	public int getTotalRow() {
@@ -101,7 +101,7 @@ public class Page implements Serializable{
 		}
 	}
 	/**
-	 * ��ҳ��
+	 * 
 	 * @return
 	 */
 	public int getTotalPage() {
@@ -111,7 +111,7 @@ public class Page implements Serializable{
 		this.totalPage = totalPage;
 	}
 	/**
-	 * ��һҳ��ʼ�ط�
+	 * 
 	 * @return
 	 */
 	public int nextPageStart(){
