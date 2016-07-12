@@ -19,7 +19,7 @@ public class StockTrackGrapDateMission implements ApplicationListener {
 	private CommonUrlGrapService commonUrlGrapService;
 
 	@Autowired
-	private PdfUrlGrapService pdfUrlGrapService;
+	private ThsggsdUrlGrapService thsggsdUrlGrapService;
 
 	@Autowired
 	private InteractionUrlGrapService interactionUrlGrapService;
@@ -39,9 +39,9 @@ public class StockTrackGrapDateMission implements ApplicationListener {
 			isStart = false;
 			// 启动common网址抓取任务
 			commonUrlGrapService.grap();
-			// 启动pdf网址抓取任务
-			pdfUrlGrapService.grap();
-			// 启动互动问答网址抓取任务
+			// 启动同花顺公告速递网址抓取任务
+			thsggsdUrlGrapService.grap();
+			// 启动全景网互动精华网址抓取任务
 			interactionUrlGrapService.grap();
 			// 启动金融公告速度网址抓取任务
 			jrjggsdUrlGrapService.grap();

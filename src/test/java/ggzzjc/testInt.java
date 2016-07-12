@@ -10,10 +10,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.becks.service.PdfUrlGrapService;
+import com.becks.service.ThsggsdUrlGrapService;
 
 public class testInt {
-	static Logger logger = Logger.getLogger(PdfUrlGrapService.class);
+	static Logger logger = Logger.getLogger(ThsggsdUrlGrapService.class);
 
 	public static void main(String[] args) throws MalformedURLException {
 

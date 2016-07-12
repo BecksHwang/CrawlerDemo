@@ -27,13 +27,13 @@ import com.becks.util.RedisAPI;
 import com.becks.util.StringUtil;
 
 /**
- * @Description: pdf网址任务抓取程序
+ * @Description: 同花顺公告速递网址任务抓取程序
  * @author BecksHwang
  * @date
  */
 @Component
-public class PdfUrlGrapService {
-	static Logger logger = Logger.getLogger(PdfUrlGrapService.class);
+public class ThsggsdUrlGrapService {
+	static Logger logger = Logger.getLogger(ThsggsdUrlGrapService.class);
 	@Autowired
 	private TargetService targetService;
 	@Autowired

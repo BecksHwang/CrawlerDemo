@@ -9,12 +9,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import com.becks.service.PdfUrlGrapService;
+import com.becks.service.ThsggsdUrlGrapService;
 import com.becks.util.GrapMethodUtil;
 
 
 public class testJs {
-	static Logger logger = Logger.getLogger(PdfUrlGrapService.class);
+	static Logger logger = Logger.getLogger(ThsggsdUrlGrapService.class);
 
 	public static void main(String[] args) throws MalformedURLException {
 

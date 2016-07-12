@@ -26,7 +26,7 @@ import com.becks.util.GrapMethodUtil;
 import com.becks.util.RedisAPI;
 import com.becks.util.StringUtil;
 /**
- * @Description: 互动问答任务抓取程序
+ * @Description: 全景网互动精华任务抓取程序
  * @author BecksHwang
  * @date
  */
