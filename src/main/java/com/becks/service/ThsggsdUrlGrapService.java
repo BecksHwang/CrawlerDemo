@@ -39,7 +39,7 @@ public class ThsggsdUrlGrapService {
 	@Autowired
 	private NewsService newsService;
 	static List<Target> targetList = new ArrayList<>();
-	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(5);
+	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(3);
 
 	public boolean missionCheckCode(String title, String url, String keywords, Long targetId) {
 		String unique = title + "-" + url + "-" + keywords + "-" + targetId;

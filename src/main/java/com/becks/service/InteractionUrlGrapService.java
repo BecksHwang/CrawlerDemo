@@ -38,7 +38,7 @@ public class InteractionUrlGrapService {
 	@Autowired
 	private InteractionService interactionService;
 	static List<Target> targetList = new ArrayList<>();
-	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(5);
+	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(3);
 
 	public boolean missionCheckCode(String ask, String answer) {
 		String unique = ask + "-" + answer ;

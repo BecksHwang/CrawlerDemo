@@ -39,7 +39,7 @@ public class HeXunStockUrlGrapService {
 	@Autowired
 	private NewsService newsService;
 	static List<Target> targetList = new ArrayList<>();
-	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(10);
+	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(3);
 
 	public HeXunStockUrlGrapService() {
 
