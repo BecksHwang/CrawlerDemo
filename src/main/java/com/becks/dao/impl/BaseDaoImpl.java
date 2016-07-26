@@ -32,8 +32,6 @@ public class BaseDaoImpl<T> {
 	@Autowired
 	private SessionFactory sessionFactory;
 
-	private Class entityClass;
-
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
