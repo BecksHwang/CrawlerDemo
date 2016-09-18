@@ -92,8 +92,6 @@ public class DycjkxUrlGrapService {
 		protected void performTarget(Target target) {
 			logger.error(
 					"抓取网址：" + "targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:" + target.getUrl());
-			if (target == null)
-				return;
 			try {
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 				String urlstr = target.getUrl() + formatter.format(new Date());// 拼接时间组成抓取网址
