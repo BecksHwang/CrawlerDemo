@@ -117,14 +117,10 @@ public class BaseDaoImpl<T> {
 	public List getListByHql(String hql, HqlPage page) {
 		List retList = null;
 		Session session = sessionFactory.openSession();
-		// HibernateUtils.closeSession(s);
 		try {
 			session.getTransaction().begin();
 			Query query = (Query) session.createQuery(hql);
-			// System.out.println("Hql:"+hql);
 			if (page != null) {
-				// System.out.println("index:"+page.index);
-				// System.out.println("count:"+page.count);
 				query.setFirstResult(page.index);
 				query.setMaxResults(page.count);
 			}
