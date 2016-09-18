@@ -47,11 +47,6 @@ public class InteractionController {
 		return result;
 	}
 
-	@RequestMapping("/test")
-	public void test() {
-		System.out.println("test");
-	}
-
 	public static void main(String[] args) throws Exception {
 	}
 

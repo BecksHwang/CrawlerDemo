@@ -33,24 +33,20 @@ public class DateUtil {
 	}
 
 	public static Long getTodayTimeStamp() {
-
 		Calendar todayStart = Calendar.getInstance();
 		todayStart.set(Calendar.HOUR_OF_DAY, 23);
 		todayStart.set(Calendar.MINUTE, 59);
 		todayStart.set(Calendar.SECOND, 59);
 		todayStart.set(Calendar.MILLISECOND, 0);
-
 		return todayStart.getTime().getTime();
 	}
 	
 	public static Long getTodayZeroTimeStamp() {
-
 		Calendar todayStart = Calendar.getInstance();
 		todayStart.set(Calendar.HOUR_OF_DAY, 00);
 		todayStart.set(Calendar.MINUTE, 00);
 		todayStart.set(Calendar.SECOND, 00);
 		todayStart.set(Calendar.MILLISECOND, 0);
-
 		return todayStart.getTime().getTime();
 	}
 
@@ -61,25 +57,21 @@ public class DateUtil {
 
 	public static boolean isToday(Long now) {
 		Long span = getTodayTimeStamp() - now;
-
 		if (span >= 0 && span < 24 * 60 * 60 * 1000) {
 			return true;
 		} else {
 			return false;
 		}
-
 	}
 
 	public static Long intervalBetweenNow(Long timeStamp) {
 		Long now = new Date().getTime();
-
 		return timeStamp - now;
 	}
 
 	public static void main(String[] args) {
 		Date date = new Date(getTodayTimeStamp());
 		System.out.println(date);
-
 		Calendar todayStart = Calendar.getInstance();
 		todayStart.set(Calendar.HOUR_OF_DAY, 0);
 		todayStart.set(Calendar.MINUTE, 0);

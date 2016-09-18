@@ -21,7 +21,6 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.jsoup.Jsoup;
 
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
@@ -33,10 +32,6 @@ import net.sf.json.JSONObject;
  */
 public class SendUrlUtil {
 
-	/*
-	 * https://api.weixin.qq.com/sns/oauth2/access_token ?appid=APPID
-	 * &secret=SECRET &code=CODE &grant_type=authorization_code
-	 */
 	public static JSONObject returnJsonObjectGet(String url, HashMap<String, String> hm) {
 		HttpClient client = new HttpClient();
 		boolean isFirst = true;
@@ -60,13 +55,6 @@ public class SendUrlUtil {
 
 			e1.printStackTrace();
 		}
-
-		// try {
-		// encodeUrl = URLEncoder.encode(encodeUrl,"UTF-8");
-		// } catch (UnsupportedEncodingException e1) {
-		// // TODO Auto-generated catch block
-		// e1.printStackTrace();
-		// }
 		url += encodeUrl;
 		GetMethod method = new GetMethod(url);
 		int statusCode = 0;
@@ -80,10 +68,8 @@ public class SendUrlUtil {
 			byte[] responseBody = method.getResponseBody();
 			jsonObject = JSONObject.fromObject(new String(responseBody, "utf-8"));
 		} catch (HttpException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -92,7 +78,6 @@ public class SendUrlUtil {
 
 	public static JSONObject returnJsonObjectPost(String url, HashMap<String, String> hm) {
 		HttpClient client = new HttpClient();
-
 		PostMethod method = new PostMethod(url);
 		method.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET, "utf-8");
 		int arrCount = 0;
@@ -115,7 +100,6 @@ public class SendUrlUtil {
 			count++;
 		}
 		method.setRequestBody(data);
-		// method.setParams(params);
 		int statusCode = 0;
 		JSONObject jsonObject = null;
 		try {
@@ -123,15 +107,11 @@ public class SendUrlUtil {
 			if (statusCode != HttpStatus.SC_OK) {
 				System.err.println("Method failed: " + method.getStatusLine());
 			}
-
 			byte[] responseBody = method.getResponseBody();
 			jsonObject = JSONObject.fromObject(new String(responseBody, "utf-8"));
-			
 		} catch (HttpException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -143,7 +123,6 @@ public class SendUrlUtil {
 		/* 连接超时 */
 		httpClient.getParams().setIntParameter("http.socket.timeout", 10000);
 		GetMethod getMethod = new GetMethod(address);
-
 		if (headParam != null) {
 			Iterator iter = headParam.entrySet().iterator();
 			while (iter.hasNext()) {
@@ -153,7 +132,6 @@ public class SendUrlUtil {
 				getMethod.setRequestHeader(key, val);
 			}
 		}
-
 		getMethod.getParams().setParameter("http.protocol.cookie-policy", CookiePolicy.BROWSER_COMPATIBILITY);
 		String html = null;
 		try {
@@ -162,9 +140,6 @@ public class SendUrlUtil {
 				System.err.println("Method failed: " + getMethod.getStatusLine());
 				return html;
 			}
-			// 读取内容
-			// byte[] responseBody = getMethod.getResponseBodyAsStream();
-			// 处理内容
 			InputStream resStream = getMethod.getResponseBodyAsStream();
 			BufferedReader br = new BufferedReader(new InputStreamReader(resStream, "UTF-8"));
 			StringBuffer resBuffer = new StringBuffer();
@@ -173,12 +148,10 @@ public class SendUrlUtil {
 				resBuffer.append(resTemp);
 			}
 			html = resBuffer.toString();
-			// System.out.println(html);
 		} catch (Exception e) {
 			System.out.println(address);
 			e.printStackTrace();
 			return "";
-			// System.err.println("页面无法访问");
 		} finally {
 			getMethod.releaseConnection();
 		}
@@ -198,9 +171,6 @@ public class SendUrlUtil {
 				System.err.println("Method failed: " + getMethod.getStatusLine());
 				return html;
 			}
-			// 读取内容
-			// byte[] responseBody = getMethod.getResponseBodyAsStream();
-			// 处理内容
 			InputStream resStream = getMethod.getResponseBodyAsStream();
 			BufferedReader br = new BufferedReader(new InputStreamReader(resStream, "UTF-8"));
 			StringBuffer resBuffer = new StringBuffer();
@@ -209,12 +179,10 @@ public class SendUrlUtil {
 				resBuffer.append(resTemp);
 			}
 			html = resBuffer.toString();
-			// System.out.println(html);
 		} catch (Exception e) {
 			System.out.println(address);
 			e.printStackTrace();
 			return "";
-			// System.err.println("页面无法访问");
 		} finally {
 			getMethod.releaseConnection();
 		}
@@ -234,9 +202,6 @@ public class SendUrlUtil {
 				System.err.println("Method failed: " + getMethod.getStatusLine());
 				return html;
 			}
-			// 读取内容
-			// byte[] responseBody = getMethod.getResponseBodyAsStream();
-			// 处理内容
 			InputStream resStream = getMethod.getResponseBodyAsStream();
 			BufferedReader br = new BufferedReader(new InputStreamReader(resStream, "GB2312"));
 			StringBuffer resBuffer = new StringBuffer();
@@ -245,12 +210,10 @@ public class SendUrlUtil {
 				resBuffer.append(resTemp);
 			}
 			html = resBuffer.toString();
-			// System.out.println(html);
 		} catch (Exception e) {
 			System.out.println(address);
 			e.printStackTrace();
 			return "";
-			// System.err.println("页面无法访问");
 		} finally {
 			getMethod.releaseConnection();
 		}
@@ -260,7 +223,6 @@ public class SendUrlUtil {
 	public static String getHtmlByJousp(String address) throws IOException {
 		return Jsoup.connect(address).get().toString();
 	}
-
 	public static JSONObject returnJsonObjectForJRJGGSD(String url, HashMap<String, String> hm) {
 		HttpClient client = new HttpClient();
 
@@ -286,7 +248,6 @@ public class SendUrlUtil {
 			count++;
 		}
 		method.setRequestBody(data);
-		// method.setParams(params);
 		int statusCode = 0;
 		JSONObject jsonObject = null;
 		try {
@@ -305,10 +266,8 @@ public class SendUrlUtil {
 			String str2 = str1.substring(16, str1.length() - 1);
 			jsonObject = JSONObject.fromObject(str2);
 		} catch (HttpException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -320,23 +279,5 @@ public class SendUrlUtil {
 		String html = null;
 		html = getHtmlByJousp(url);
 		System.out.println(html);
-//		HashMap hm = new HashMap();
-//		hm.put("column", "szse");
-//		hm.put("columnTitle", "深市公告");
-//		hm.put("pageNum", "1");
-//		hm.put("pageSize", "30");
-//		hm.put("tabName", "latest");
-//		hm.put("tabName", "请选择日期");
-//		JSONObject jo = returnJsonObjectPost(url, hm);
-//		JSONArray ja = jo.getJSONArray("classifiedAnnouncements");
-//		for (int i = 0; i < ja.size(); i++) {
-//			JSONArray ja2 = ja.getJSONArray(i);
-//			for (int j = 0; j < ja2.size(); j++) {
-//				JSONObject jo2 = ja2.getJSONObject(j);
-//				System.out.println(jo2.getString("secName"));
-//				//System.out.println(jo2.getString("announcementTitle"));
-//			}
-//			
-//		}
 	}
 }

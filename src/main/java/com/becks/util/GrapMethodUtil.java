@@ -101,7 +101,6 @@ public class GrapMethodUtil {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		} finally {
@@ -109,8 +108,6 @@ public class GrapMethodUtil {
 				try {
 					br.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					// e.printStackTrace();
 					logger.error(
 							GrapMethodUtil.class.getName() + "  urlGetString流未关闭:" + strURL + "\r\n" + e.getMessage());
 				}
@@ -119,8 +116,6 @@ public class GrapMethodUtil {
 				try {
 					inputStreamReader.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					// e.printStackTrace();
 					logger.error(
 							GrapMethodUtil.class.getName() + "  urlGetString流未关闭:" + strURL + "\r\n" + e.getMessage());
 				}
@@ -129,8 +124,6 @@ public class GrapMethodUtil {
 				try {
 					inputStream.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					// e.printStackTrace();
 					logger.error(
 							GrapMethodUtil.class.getName() + "  urlGetString流未关闭:" + strURL + "\r\n" + e.getMessage());
 				}
@@ -154,22 +147,17 @@ public class GrapMethodUtil {
 			HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
 			httpConn.setConnectTimeout(10000);
 			httpConn.setReadTimeout(10000);
-			// httpConn.setRequestProperty(arg0, arg1);
 			if (httpConn.getResponseCode() != httpConn.HTTP_OK)
 				return stringBuffer.toString();
 			inputStream = httpConn.getInputStream();
 			stringBuffer = new StringBuffer(new Source(inputStream).toString());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
 			logger.error(GrapMethodUtil.class.getName() + "  getStringByUrl抓取网页失败:" + strURL + "\r\n" + e.getMessage());
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					// e.printStackTrace();
 					logger.error(GrapMethodUtil.class.getName() + "  getStringByUrl流未关闭:" + strURL + "\r\n"
 							+ e.getMessage());
 				}
@@ -178,8 +166,6 @@ public class GrapMethodUtil {
 				try {
 					inputStream.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					// e.printStackTrace();
 					logger.error(GrapMethodUtil.class.getName() + "  getStringByUrl流未关闭:" + strURL + "\r\n"
 							+ e.getMessage());
 				}
@@ -203,22 +189,17 @@ public class GrapMethodUtil {
 			HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
 			httpConn.setConnectTimeout(60000);
 			httpConn.setReadTimeout(60000);
-			// httpConn.setRequestProperty(arg0, arg1);
 			if (httpConn.getResponseCode() != httpConn.HTTP_OK)
 				return stringBuffer.toString();
 			inputStream = httpConn.getInputStream();
 			stringBuffer = new StringBuffer(new Source(inputStream).toString());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
 			logger.error(GrapMethodUtil.class.getName() + "  getStringByUrl抓取网页失败:" + strURL + "\r\n" + e.getMessage());
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					// e.printStackTrace();
 					logger.error(GrapMethodUtil.class.getName() + "  getStringByUrl流未关闭:" + strURL + "\r\n"
 							+ e.getMessage());
 				}
@@ -227,8 +208,6 @@ public class GrapMethodUtil {
 				try {
 					inputStream.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					// e.printStackTrace();
 					logger.error(GrapMethodUtil.class.getName() + "  getStringByUrl流未关闭:" + strURL + "\r\n"
 							+ e.getMessage());
 				}
@@ -289,10 +268,8 @@ public class GrapMethodUtil {
 		Matcher matcher = pattern.matcher(hrefStr);
 		if (matcher.find()) {
 			String date = matcher.group();
-			// System.out.println(date);
 			String newDate1 = date.replaceAll("\\-", "");
 			String newDate2 = newDate1.replaceAll("\\/", "");
-			// System.out.println("替换后："+newDate2);
 			SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
 			Calendar c = Calendar.getInstance();
 			try {
@@ -308,17 +285,12 @@ public class GrapMethodUtil {
 			sysdate.set(Calendar.MILLISECOND, 0);
 			long times = sysdate.getTimeInMillis() - c.getTimeInMillis();
 			long days = times / (1000 * 3600 * 24);
-			// System.out.println(days+"天以前的消息");
 			if (days <= 1) {
-				// System.out.println("新的消息要保存");
 				return false;
 			} else {
-				// System.out.println("旧的消息不保存");
 				return true;
 			}
-
 		} else {
-			// System.out.println("没匹配到！");
 			return false;
 		}
 
@@ -337,13 +309,11 @@ public class GrapMethodUtil {
 		if ((url.toLowerCase().startsWith("http://")) || (url.toLowerCase().startsWith("https://"))) {
 			return url;
 		}
-
 		if (url.startsWith("/")) {
 			return sourceURL.getProtocol() + "://" + sourceURL.getHost()
 					+ (sourceURL.getPort() == -1 ? "" : new StringBuilder(":").append(sourceURL.getPort()).toString())
 					+ url;
 		}
-
 		int sep = original.lastIndexOf("/");
 		int dot = original.lastIndexOf(".");
 		if ((dot != -1) && (dot > sep)) {

@@ -32,8 +32,6 @@ public class BaseDaoImpl<T> {
 	@Autowired
 	private SessionFactory sessionFactory;
 
-	private Class entityClass;
-
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
@@ -43,16 +41,12 @@ public class BaseDaoImpl<T> {
 	}
 
 	public void save(T entity) throws Exception {
-
 		Session session = sessionFactory.openSession();
 		try {
 			session.getTransaction().begin();
-
 			session.save(entity);
-
 			session.getTransaction().commit();
 			session.close();
-			// HibernateUtils.closeSession(s);
 		} catch (RuntimeException e) {
 			session.getTransaction().rollback();
 			session.close();
@@ -61,13 +55,10 @@ public class BaseDaoImpl<T> {
 	}
 
 	public void delete(T entity) throws Exception {
-
 		Session session = sessionFactory.openSession();
 		try {
 			session.getTransaction().begin();
-
 			session.delete(entity);
-			// throw new Exception();
 			session.getTransaction().commit();
 		} catch (RuntimeException e) {
 			session.getTransaction().rollback();
@@ -83,12 +74,9 @@ public class BaseDaoImpl<T> {
 		Session session = sessionFactory.openSession();
 		try {
 			session.getTransaction().begin();
-
 			session.update(entity);
-
 			session.getTransaction().commit();
 			session.close();
-			// HibernateUtils.closeSession(s);
 		} catch (RuntimeException e) {
 			session.getTransaction().rollback();
 			session.close();
@@ -101,18 +89,14 @@ public class BaseDaoImpl<T> {
 		Session session = sessionFactory.openSession();
 		try {
 			session.getTransaction().begin();
-
 			retObj = session.get(entityClass, id);
-
 			session.getTransaction().commit();
 			session.close();
-			// HibernateUtils.closeSession(s);
 		} catch (RuntimeException e) {
 			session.getTransaction().rollback();
 			session.close();
 			e.printStackTrace();
 		}
-
 		return (T) retObj;
 	}
 
@@ -141,17 +125,10 @@ public class BaseDaoImpl<T> {
 	public List<T> getListByHqlByParams(String hql, Map<String, Object> params, HqlPage page) {
 		List<T> retList = null;
 		Session session = sessionFactory.openSession();
-
-		// HibernateUtils.closeSession(s);
 		try {
-
 			session.getTransaction().begin();
-
 			Query query = (Query) session.createQuery(hql);
-			// System.out.println("Hql:"+hql);
 			if (page != null) {
-				// System.out.println("index:"+page.index);
-				// System.out.println("count:"+page.count);
 				query.setFirstResult(page.index);
 				query.setMaxResults(page.count);
 			}
@@ -167,16 +144,13 @@ public class BaseDaoImpl<T> {
 				}
 			}
 			retList = query.list(); // 得到每页的数据
-
 			session.getTransaction().commit();
-
 		} catch (Exception e) {
 			System.err.println("getListByHqlByParams 出错：" + hql);
 			e.printStackTrace();
 		} finally {
 			session.close();
 		}
-
 		return retList;
 	}
 

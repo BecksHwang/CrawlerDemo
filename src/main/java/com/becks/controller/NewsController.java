@@ -72,7 +72,6 @@ public class NewsController {
 	
 	@RequestMapping("/newsList")
 	public String newsList() {
-		
 		return "newsList";
 	}
 
