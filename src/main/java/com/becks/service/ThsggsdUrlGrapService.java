@@ -189,7 +189,6 @@ public class ThsggsdUrlGrapService {
 									+ target.getUrl());
 							String unique = title + "-" + href + "-" + keys + "-" + target.getMissionId() + "-"
 									+ target.getId();
-							// jedis.sadd(CommonParameter.MISSION_CHECKCODE,unique);
 							RedisAPI.set(CommonParameter.MISSION_CHECKCODE, unique);
 							System.gc();
 
