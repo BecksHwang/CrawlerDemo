@@ -2,6 +2,9 @@ package ggzzjc;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -11,6 +14,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.becks.service.ThsggsdUrlGrapService;
+import com.becks.util.SendUrlUtil;
 
 public class testInt {
 	static Logger logger = Logger.getLogger(ThsggsdUrlGrapService.class);
@@ -20,8 +24,10 @@ public class testInt {
 		new Thread(new Runnable() {
 			public void run() {
 				try {
-					specialParseTarget("http://ircs.p5w.net/ircs/interaction/moreQuestionForGszz.do");
+					specialParseTarget("http://www.lianhuacaijing.com/kuaibao/");
 				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -29,7 +35,7 @@ public class testInt {
 
 	}
 
-	protected static void specialParseTarget(String url) throws MalformedURLException {
+	protected static void specialParseTarget(String url) throws Exception {
 
 		while (true) {
 			try {
@@ -37,33 +43,32 @@ public class testInt {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			String urlstr = url;
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			
+			//String urlstr = url + formatter.format(new Date());
 			String html = null;
-			html = new com.becks.util.GrapMethodUtil().getStringByUrl(urlstr);
+			html = new com.becks.util.GrapMethodUtil().getStringByUrl(url);
 			// html = new SpecialGrapMethodUtil().getStringByUrlChrome(urlstr);
+			HashMap hm = new HashMap<>();
+			//hm.put("Referer", "http://www.yicai.com/brief/");
+			//html = new SendUrlUtil().getHtml(url, hm);
 			System.out.println("*******************抓取中*******************");
-			// System.out.println(html);
+			//System.out.println(html);
 			if (com.becks.util.StringUtil.isNullOrEmpty(html)) {
 				System.out.println("没有抓取到内容！");
 				continue;
 			}
 			Document document = Jsoup.parse(html);
-			List<Element> elementList = document.getElementsByClass("req_box2");
+			System.out.println(document);
+			List<Element> elementList = document.getElementsByClass("content");
 			for (int e = 0; e < elementList.size(); e++) {
 				Element element = (Element) elementList.get(e);
-				Elements askElements = element.getElementsByClass("hd_td1");
-				Elements answerElements = element.getElementsByClass("hd_td3");
-				Elements companyElements = element.getElementsByAttributeValue("width", "110");
+				//Elements pElements = element.getElementsByTag("p");
 				
-				Element askElement = (Element) askElements.get(0);
-				Element answerElement = (Element) answerElements.get(0);
-				Element companyElement = (Element) companyElements.get(0);
-				String ask = askElement.text();
-				String answer = answerElement.text();
-				String company = companyElement.text();
-				System.out.println("company=" + company);
-				System.out.println("ask=" + ask);
-				System.out.println("answer=" + answer);
+				//Element pElement = (Element) pElements.get(0);
+				String title = element.text();
+				System.out.println("title=" + title);
+				
 			}
 
 		}

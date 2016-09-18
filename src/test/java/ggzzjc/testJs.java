@@ -11,6 +11,7 @@ import org.jsoup.nodes.Element;
 
 import com.becks.service.ThsggsdUrlGrapService;
 import com.becks.util.GrapMethodUtil;
+import com.becks.util.StringUtil;
 
 
 public class testJs {
@@ -21,7 +22,7 @@ public class testJs {
 		new Thread(new Runnable() {
 			public void run() {
 				try {
-					specialParseTarget("http://ircs.p5w.net/ircs/interaction/moreQuestionForGszz.do");
+					specialParseTarget("http://stock.hexun.com/gsxw/");
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				}
@@ -48,7 +49,29 @@ public class testJs {
 				System.out.println("没有抓取到内容！");
 				continue;
 			}
-			Document document = Jsoup.parse(html);
+			String content = html;
+			
+			String startTag = "<div class="+ "\"" + "temp01" + "\"" + ">";//"<div class="+ "\"" + "temp01" + "\"" + ">"
+			String endTag = "<div class=" + "\"" + "listdh"+ "\"" + ">";
+
+			int begin;
+			if ((StringUtil.isNullOrEmpty(startTag)) || (content.indexOf(startTag) == -1))
+				begin = 0;
+			else
+				begin = content.indexOf(startTag);
+			int end;
+			if ((StringUtil.isNullOrEmpty(endTag)) || (content.indexOf(endTag) == -1))
+				end = content.length();
+			else {
+				end = content.indexOf(endTag);
+			}
+			content = content.substring(begin, end);
+			
+			
+			Document document = Jsoup.parse(content);
+			
+			
+			
 			List<Element> elementList = document.getElementsByTag("a");
 			for (int e = 0; e < elementList.size(); e++) {
 				Element element = (Element) elementList.get(e);

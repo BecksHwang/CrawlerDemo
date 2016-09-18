@@ -12,9 +12,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.becks.entity.News;
+import com.becks.entity.StockLabel;
 import com.becks.entity.Target;
 import com.becks.entity.User;
 import com.becks.service.NewsService;
+import com.becks.service.StockLabelService;
 import com.becks.service.TargetService;
 import com.becks.service.UserService;
 
@@ -39,6 +41,9 @@ public class TestService {
 
 	@Autowired
 	private TargetService targetService;
+
+	@Autowired
+	private StockLabelService stockLabelService;
 
 	@Test
 	public void save() {
@@ -77,7 +82,7 @@ public class TestService {
 
 	@Test
 	public void saveTarget() throws Exception {
-		
+
 		Target t = new Target();
 		t.setName("测试网址");
 		t.setUrl("www.baidu.com");
@@ -88,11 +93,22 @@ public class TestService {
 		}
 
 	}
-	
+
 	@Test
 	public void saveIsExits() {
-		//newsService.isExits(targetId, title, url)
-		System.out.println(newsService.isExits(5l, "惠而浦获得政府补助4000万元", "http://stock.10jqka.com.cn/20160628/c591306555.shtml"));
+		// newsService.isExits(targetId, title, url)
+		System.out.println(
+				newsService.isExits(5l, "惠而浦获得政府补助4000万元", "http://stock.10jqka.com.cn/20160628/c591306555.shtml"));
+
+	}
+
+	@Test
+	public void findStockLabelAllTest() throws Exception {
+
+		List<StockLabel> list = stockLabelService.findAll();
+		for (StockLabel stockLabel2 : list) {
+			System.out.println(stockLabel2);
+		}
 
 	}
 

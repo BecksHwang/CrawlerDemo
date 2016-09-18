@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import com.becks.common.CommonParameter;
 import com.becks.entity.News;
+import com.becks.entity.StockLabel;
 import com.becks.entity.Target;
 import com.becks.util.GrapMethodUtil;
 import com.becks.util.RedisAPI;
@@ -38,8 +39,11 @@ public class ThsggsdUrlGrapService {
 	private TargetService targetService;
 	@Autowired
 	private NewsService newsService;
+	@Autowired
+	private StockLabelService stockLabelService;
 	static List<Target> targetList = new ArrayList<>();
-	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(3);
+	static List<StockLabel> stockLableList = new ArrayList<>();
+	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(5);
 
 	public boolean missionCheckCode(String title, String url, String keywords, Long targetId) {
 		String unique = title + "-" + url + "-" + keywords + "-" + targetId;
@@ -50,8 +54,24 @@ public class ThsggsdUrlGrapService {
 		}
 	}
 
-	public boolean pdfCheckCode(String title, String url) {
+	public boolean thsggsdCheck(String title, String url) {
+		boolean checkSight1 = true;
+		boolean checkSight2 = false;
 		if (url.endsWith("pdf")) {
+			checkSight1 = true;
+		} else {
+			checkSight1 = false;
+		}
+
+		//筛选匹配标签的消息
+		for (StockLabel stockLabel : stockLableList) {
+			if (title.contains(stockLabel.getLableName())) {
+				checkSight2 = true;
+				break;
+			}
+		}
+
+		if (checkSight1 && checkSight2) {
 			return true;
 		} else {
 			return false;
@@ -60,6 +80,7 @@ public class ThsggsdUrlGrapService {
 
 	public void grap() {
 		targetList = targetService.findAll();
+		stockLableList = stockLabelService.findAll();
 		for (Target target : targetList) {
 			if (target.getMissionId() == CommonParameter.PDF_URL) {
 				targetQueue.offer(target);
@@ -97,6 +118,8 @@ public class ThsggsdUrlGrapService {
 		protected void performTarget(Target target) {
 			logger.error(
 					"抓取网址：" + "targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:" + target.getUrl());
+			if (target == null)
+				return;
 			try {
 				String urlstr = target.getUrl();
 				if (StringUtil.isNullOrEmpty(urlstr)) {
@@ -142,7 +165,7 @@ public class ThsggsdUrlGrapService {
 					Element element = (Element) elementList.get(e);
 					String href = element.attr("href");
 					String title = element.text();
-					if (pdfCheckCode(title, href)) {
+					if (thsggsdCheck(title, href)) {
 						href = GrapMethodUtil.buildURL(new URL(urlstr), href);
 						String keys = "";
 						String pureTitle = StringUtil.trimPunctuation(title);
@@ -194,7 +217,6 @@ public class ThsggsdUrlGrapService {
 	}
 
 	public static void main(String[] args) {
-
 	}
 
 }

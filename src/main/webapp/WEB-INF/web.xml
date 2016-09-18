@@ -62,7 +62,7 @@
   
     <servlet-mapping>  
         <servlet-name>rest</servlet-name>  
-        <url-pattern>/*</url-pattern>  
+        <url-pattern>*.do</url-pattern>  
     </servlet-mapping>  
   
     <filter-mapping>  

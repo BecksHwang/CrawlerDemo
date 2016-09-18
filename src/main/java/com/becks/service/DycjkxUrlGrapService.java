@@ -3,7 +3,10 @@ package com.becks.service;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,46 +23,45 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.becks.common.CommonParameter;
-import com.becks.entity.Interaction;
+import com.becks.entity.News;
 import com.becks.entity.Target;
-import com.becks.util.GrapMethodUtil;
 import com.becks.util.RedisAPI;
+import com.becks.util.SendUrlUtil;
 import com.becks.util.StringUtil;
+
 /**
- * @Description: 全景网互动精华任务抓取程序
+ * @Description: 第一财经快讯任务抓取程序
  * @author BecksHwang
  * @date
  */
 @Component
-public class InteractionUrlGrapService {
-	static Logger logger = Logger.getLogger(InteractionUrlGrapService.class);
+public class DycjkxUrlGrapService {
+	static Logger logger = Logger.getLogger(DycjkxUrlGrapService.class);
 	@Autowired
 	private TargetService targetService;
 	@Autowired
-	private InteractionService interactionService;
+	private NewsService newsService;
 	static List<Target> targetList = new ArrayList<>();
-	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(5);
+	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(3);
 
-	public boolean missionCheckCode(String ask, String answer) {
-		String unique = ask + "-" + answer ;
-		if (RedisAPI.get(CommonParameter.MISSION_CHECKCODE_ITRCT, unique) || interactionService.isExits(ask, answer)) {
+	public boolean missionCheckCode(String title, String url, Long targetId) {
+		String unique = title + "-" + url + "-" + targetId;
+		if (RedisAPI.get(CommonParameter.MISSION_CHECKCODE, unique) || newsService.isExits(targetId, title, url)) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-	
-
 	public void grap() {
 		targetList = targetService.findAll();
 		for (Target target : targetList) {
-			if (target.getMissionId() == CommonParameter.INTERACTION_URL) {
+			if (target.getMissionId() == CommonParameter.DYCJKX_URL) {
 				targetQueue.offer(target);
 			}
 		}
 		for (int i = 0; i < 1; i++) {
-			logger.error("抓interction网址，启动第" + i + "个线程！");
+			logger.error("抓第一财经快讯网址，启动第" + i + "个线程！");
 			new Thread(this.new GrapThread()).start();
 		}
 	}
@@ -93,12 +95,15 @@ public class InteractionUrlGrapService {
 			if (target == null)
 				return;
 			try {
-				String urlstr = target.getUrl();
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+				String urlstr = target.getUrl() + formatter.format(new Date());// 拼接时间组成抓取网址
 				if (StringUtil.isNullOrEmpty(urlstr)) {
 					return;
 				}
 				String html = null;
-				html = new GrapMethodUtil().getStringByUrl(urlstr);
+				HashMap hm = new HashMap<>();
+				hm.put("Referer", "http://www.yicai.com/brief/");// 添加请求来源，防止非法请求得不到返回HTML
+				html = new SendUrlUtil().getHtml(urlstr, hm);
 				if (StringUtil.isNullOrEmpty(html)) {
 					logger.error("抓取内容为空，名称：" + target.getName() + "-URL:" + target.getUrl());
 					return;
@@ -132,38 +137,38 @@ public class InteractionUrlGrapService {
 				content = content.substring(begin, end);
 
 				Set<Long> checkCodeSet = new HashSet<>();
-				List<Element> elementList = document.getElementsByClass("req_box2");
+				List<Element> elementList = document.getElementsByClass("txt");
 				for (int e = 0; e < elementList.size(); e++) {
 					Element element = (Element) elementList.get(e);
-					Elements askElements = element.getElementsByClass("hd_td1");
-					Elements answerElements = element.getElementsByClass("hd_td3");
-					Elements companyElements = element.getElementsByAttributeValue("width", "110");
-					Element askElement = (Element) askElements.get(0);
-					Element answerElement = (Element) answerElements.get(0);
-					Element companyElement = (Element) companyElements.get(0);
-					String ask = askElement.text();
-					String answer = answerElement.text();
-					String company = companyElement.text();
+					Elements pElements = element.getElementsByTag("p");
+					Element pElement = (Element) pElements.get(0);
+					String title = pElement.text();
+					String href = "http://www.yicai.com/brief/";
 					if (true) {
-						Long checkCode = StringUtil.getCheckCode((ask + answer).getBytes());
+						String keys = "";
+						String pureTitle = StringUtil.trimPunctuation(title);
+						Long checkCode = StringUtil.getCheckCode(title.getBytes());
 						// 标识唯一
-						if (!checkCodeSet.contains(checkCode) && !missionCheckCode(ask, answer)) {
-							Interaction interaction = new Interaction();
-							interaction.setAsk(ask);
-							interaction.setAnswer(answer);
-							interaction.setPickTime(new Timestamp(System.currentTimeMillis()));
-							interaction.setSource(target.getName());
-							interaction.setSourceUrl(target.getUrl());
-							interaction.setTargetId(target.getId());
-							interaction.setCheckCode(checkCode);
-							interaction.setCompany(company);
-							interactionService.save(interaction);
+						if (!checkCodeSet.contains(checkCode) && !missionCheckCode(title, href, target.getId())) {
+							News news = new News();
+							news.setTitle(title);
+							news.setUrl(href);
+							news.setPureTitle(pureTitle);
+							news.setPickTime(new Timestamp(System.currentTimeMillis()));
+							news.setStatus("normal");
+							news.setKeywords(keys);
+							news.setMonitorType("page");
+							news.setSource(target.getName());
+							news.setSourceUrl(href);
+							news.setTargetId(target.getId());
+							news.setCheckCode(checkCode);
+							newsService.save(news);
 							checkCodeSet.add(checkCode);
-							logger.error("保存问答-问:" + ask + "-答：" + answer);
+							logger.error("保存消息:" + news.getTitle() + "-网址：" + href);
 							logger.error("来源：targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:"
 									+ target.getUrl());
-							String unique = ask + "-" + answer;
-							RedisAPI.set(CommonParameter.MISSION_CHECKCODE_ITRCT, unique);
+							String unique = title + "-" + href + "-" + target.getId();
+							RedisAPI.set(CommonParameter.MISSION_CHECKCODE, unique);
 							System.gc();
 						}
 					}

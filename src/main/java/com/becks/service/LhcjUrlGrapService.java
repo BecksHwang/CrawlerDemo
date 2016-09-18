@@ -2,54 +2,43 @@ package com.becks.service;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
-import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.log4j.Logger;
 
+import com.becks.common.CommonParameter;
 import com.becks.entity.News;
 import com.becks.entity.Target;
 import com.becks.util.GrapMethodUtil;
+import com.becks.util.RedisAPI;
 import com.becks.util.StringUtil;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
-import com.becks.common.CommonParameter;
-import com.becks.util.RedisAPI;
-import com.becks.util.SendUrlUtil;
-
 /**
- * @Description: 金融界公告速递网址任务抓取程序
+ * @Description: 莲花财经任务抓取程序
  * @author BecksHwang
  * @date
  */
 @Component
-public class JrjggsdUrlGrapService {
-	static Logger logger = Logger.getLogger(JrjggsdUrlGrapService.class);
+public class LhcjUrlGrapService {
+	static Logger logger = Logger.getLogger(LhcjUrlGrapService.class);
 	@Autowired
 	private TargetService targetService;
 	@Autowired
 	private NewsService newsService;
 	static List<Target> targetList = new ArrayList<>();
-	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(10);
-
-	public JrjggsdUrlGrapService() {
-
-	}
+	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(3);
 
 	public boolean missionCheckCode(String title, String url, Long targetId) {
 		String unique = title + "-" + url + "-" + targetId;
@@ -63,12 +52,12 @@ public class JrjggsdUrlGrapService {
 	public void grap() {
 		targetList = targetService.findAll();
 		for (Target target : targetList) {
-			if (target.getMissionId() == CommonParameter.JRJGGSD_URL) {
+			if (target.getMissionId() == CommonParameter.LHCJ_URL) {
 				targetQueue.offer(target);
 			}
 		}
 		for (int i = 0; i < 1; i++) {
-			logger.error("抓-金融界公告速递-网址，启动第" + i + "个线程！");
+			logger.error("抓莲花财经网址，启动第" + i + "个线程！");
 			new Thread(this.new GrapThread()).start();
 		}
 	}
@@ -99,24 +88,22 @@ public class JrjggsdUrlGrapService {
 		protected void performTarget(Target target) {
 			logger.error(
 					"抓取网址：" + "targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:" + target.getUrl());
-			if (target == null)
-				return;
 			try {
 				String urlstr = target.getUrl();
 				if (StringUtil.isNullOrEmpty(urlstr)) {
 					return;
 				}
-				HashMap hm = new HashMap();
-				hm.put("vname", "_notic_list");
-				hm.put("type", "8");
-				hm.put("page", "1");
-				hm.put("psize", "20");
-				long date = (long) (System.currentTimeMillis() / 1000);
-				String dc = String.valueOf(date);
-				hm.put("_dc", dc);
-				JSONObject jo = SendUrlUtil.returnJsonObjectForJRJGGSD(urlstr, hm);
+				String html = null;
+				html = new GrapMethodUtil().getStringByUrl(target.getUrl());
+				if (StringUtil.isNullOrEmpty(html)) {
+					logger.error("抓取内容为空，名称：" + target.getName() + "-URL:" + target.getUrl());
+					return;
+				}
+				Document document = Jsoup.parse(html);
+				String content = html;
 				// 校验该网页是否有更新
-				String code = DigestUtils.md5Hex(jo.toString());
+
+				String code = DigestUtils.md5Hex(content);
 				if (code.equals(target.getMd5())) {
 					return;
 				} else {
@@ -127,34 +114,53 @@ public class JrjggsdUrlGrapService {
 						e.printStackTrace();
 					}
 				}
-				JSONArray ja = jo.getJSONArray("data");
-				for (int i = 0; i < ja.size(); i++) {
-					String stockcode = ja.getJSONArray(i).getString(3);
-					String href = "http://stock.jrj.com.cn/share," + stockcode + ",ggcontent.shtml?discId="
-							+ ja.getJSONArray(i).getString(0);
-					String title = ja.getJSONArray(i).getString(2);
+				int begin;
+				if ((StringUtil.isNullOrEmpty(target.getStartTag())) || (content.indexOf(target.getStartTag()) == -1))
+					begin = 0;
+				else
+					begin = content.indexOf(target.getStartTag());
+				int end;
+				if ((StringUtil.isNullOrEmpty(target.getEndTag())) || (content.indexOf(target.getEndTag()) == -1))
+					end = content.length();
+				else {
+					end = content.indexOf(target.getEndTag());
+				}
+				content = content.substring(begin, end);
 
-					Set<Long> checkCodeSet = new HashSet<>();
-					Long checkCode = StringUtil.getCheckCode((title + href).getBytes());
-					if (!checkCodeSet.contains(checkCode) && !missionCheckCode(title, href, target.getId())) {
-						News news = new News();
-						news.setTitle(title);
-						news.setUrl(href);
-						news.setPickTime(new Timestamp(System.currentTimeMillis()));
-						news.setSource(target.getName());
-						news.setSourceUrl(target.getUrl());
-						news.setTargetId(target.getId());
-						news.setCheckCode(checkCode);
-						newsService.save(news);
-						checkCodeSet.add(checkCode);
-						logger.error("保存消息:" + news.getTitle() + "-网址：" + href);
-						logger.error("来源：targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:"
-								+ target.getUrl());
-						String unique = title + "-" + href + "-" + target.getId();
-						RedisAPI.set(CommonParameter.MISSION_CHECKCODE, unique);
-						System.gc();
+				Set<Long> checkCodeSet = new HashSet<>();
+				List<Element> elementList = document.getElementsByClass("content");
+				for (int e = 0; e < elementList.size(); e++) {
+					Element element = (Element) elementList.get(e);
+					String title = element.text();
+					String href = "http://www.lianhuacaijing.com/kuaibao/";
+					if (!StringUtil.isNullOrEmpty(title)) {
+						String keys = "";
+						String pureTitle = StringUtil.trimPunctuation(title);
+						Long checkCode = StringUtil.getCheckCode(title.getBytes());
+						// 标识唯一
+						if (!checkCodeSet.contains(checkCode) && !missionCheckCode(title, href, target.getId())) {
+							News news = new News();
+							news.setTitle(title);
+							news.setUrl(href);
+							news.setPureTitle(pureTitle);
+							news.setPickTime(new Timestamp(System.currentTimeMillis()));
+							news.setStatus("normal");
+							news.setKeywords(keys);
+							news.setMonitorType("page");
+							news.setSource(target.getName());
+							news.setSourceUrl(href);
+							news.setTargetId(target.getId());
+							news.setCheckCode(checkCode);
+							newsService.save(news);
+							checkCodeSet.add(checkCode);
+							logger.error("保存消息:" + news.getTitle() + "-网址：" + href);
+							logger.error("来源：targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:"
+									+ target.getUrl());
+							String unique = title + "-" + href + "-" + target.getId();
+							RedisAPI.set(CommonParameter.MISSION_CHECKCODE, unique);
+							System.gc();
+						}
 					}
-
 				}
 				logger.error("抓取网址完毕：" + "-targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:"
 						+ target.getUrl());
@@ -175,7 +181,6 @@ public class JrjggsdUrlGrapService {
 	}
 
 	public static void main(String[] args) {
-
 	}
 
 }

@@ -9,6 +9,8 @@
         http://www.springframework.org/schema/mvc   
         http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd">  
   
+  	<mvc:default-servlet-handler/>
+  
     <!-- 自动扫描@Controller注入为bean -->  
     <context:component-scan base-package="com.becks.controller" />  
   	
@@ -16,7 +18,7 @@
     <mvc:resources location="/" mapping="/**/*.html"/>
     <mvc:resources mapping="/js/**" location="/js/" />    
 	<mvc:resources mapping="/css/**" location="/css/" />    
-	<mvc:resources mapping="/fonts/**" location="/fonts/" /> 
+	<mvc:resources mapping="/fonts/**" location="/fonts/" />
   
     <!-- 以下为SpringMVC配置 -->  
     <mvc:annotation-driven>  
@@ -36,11 +38,10 @@
     </mvc:annotation-driven>  
   
     <!-- 对模型视图名称的解析，即在模型视图名称添加前后缀 -->  
-    <bean  
-        class="org.springframework.web.servlet.view.InternalResourceViewResolver">  
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">  
         <property name="viewClass"  
             value="org.springframework.web.servlet.view.JstlView" />  
-        <property name="prefix" value="/WEB-INF/views" />  
+        <property name="prefix" value="/WEB-INF/views/" />  
         <property name="suffix" value=".jsp" />  
     </bean>  
   

@@ -32,4 +32,12 @@ public class CommonParameter {
 	public static final Long HEXUN_URL = 5L;
 	// 巨潮资讯网
 	public static final Long JCZX_URL = 6L;
+	// 第一财经快讯
+	public static final Long DYCJKX_URL = 7L;
+	// 莲花财经
+	public static final Long LHCJ_URL = 8L;
+	// 上交所互动平台
+	public static final Long SJSHDPT_URL = 9L;
+	// 深交所互动易
+	public static final Long SJSHDY_URL = 10L;
 }

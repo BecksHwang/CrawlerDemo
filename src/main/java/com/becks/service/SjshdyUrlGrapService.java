@@ -4,6 +4,7 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,26 +23,27 @@ import org.springframework.stereotype.Component;
 import com.becks.common.CommonParameter;
 import com.becks.entity.Interaction;
 import com.becks.entity.Target;
-import com.becks.util.GrapMethodUtil;
 import com.becks.util.RedisAPI;
+import com.becks.util.SendUrlUtil;
 import com.becks.util.StringUtil;
+
 /**
- * @Description: 全景网互动精华任务抓取程序
+ * @Description: 深交所互动易任务抓取程序
  * @author BecksHwang
  * @date
  */
 @Component
-public class InteractionUrlGrapService {
-	static Logger logger = Logger.getLogger(InteractionUrlGrapService.class);
+public class SjshdyUrlGrapService {
+	static Logger logger = Logger.getLogger(SjshdyUrlGrapService.class);
 	@Autowired
 	private TargetService targetService;
 	@Autowired
 	private InteractionService interactionService;
 	static List<Target> targetList = new ArrayList<>();
-	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(5);
+	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(3);
 
 	public boolean missionCheckCode(String ask, String answer) {
-		String unique = ask + "-" + answer ;
+		String unique = ask + "-" + answer;
 		if (RedisAPI.get(CommonParameter.MISSION_CHECKCODE_ITRCT, unique) || interactionService.isExits(ask, answer)) {
 			return true;
 		} else {
@@ -49,17 +51,15 @@ public class InteractionUrlGrapService {
 		}
 	}
 
-	
-
 	public void grap() {
 		targetList = targetService.findAll();
 		for (Target target : targetList) {
-			if (target.getMissionId() == CommonParameter.INTERACTION_URL) {
+			if (target.getMissionId() == CommonParameter.SJSHDY_URL) {
 				targetQueue.offer(target);
 			}
 		}
 		for (int i = 0; i < 1; i++) {
-			logger.error("抓interction网址，启动第" + i + "个线程！");
+			logger.error("抓深交所互动易网址，启动第" + i + "个线程！");
 			new Thread(this.new GrapThread()).start();
 		}
 	}
@@ -87,26 +87,23 @@ public class InteractionUrlGrapService {
 			}
 		}
 
+		@SuppressWarnings("static-access")
 		protected void performTarget(Target target) {
 			logger.error(
 					"抓取网址：" + "targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:" + target.getUrl());
-			if (target == null)
-				return;
 			try {
 				String urlstr = target.getUrl();
 				if (StringUtil.isNullOrEmpty(urlstr)) {
 					return;
 				}
 				String html = null;
-				html = new GrapMethodUtil().getStringByUrl(urlstr);
+				html = new SendUrlUtil().getHtml(urlstr);
 				if (StringUtil.isNullOrEmpty(html)) {
 					logger.error("抓取内容为空，名称：" + target.getName() + "-URL:" + target.getUrl());
 					return;
 				}
-				Document document = Jsoup.parse(html);
 				String content = html;
 				// 校验该网页是否有更新
-
 				String code = DigestUtils.md5Hex(content);
 				if (code.equals(target.getMd5())) {
 					return;
@@ -130,17 +127,20 @@ public class InteractionUrlGrapService {
 					end = content.indexOf(target.getEndTag());
 				}
 				content = content.substring(begin, end);
-
+				Document document = Jsoup.parse(content);
 				Set<Long> checkCodeSet = new HashSet<>();
-				List<Element> elementList = document.getElementsByClass("req_box2");
+				List<Element> elementList1 = document.getElementsByTag("ul");
+				Element element1 = elementList1.get(0);
+				List<Element> elementList = element1.getElementsByTag("li");
 				for (int e = 0; e < elementList.size(); e++) {
 					Element element = (Element) elementList.get(e);
-					Elements askElements = element.getElementsByClass("hd_td1");
-					Elements answerElements = element.getElementsByClass("hd_td3");
-					Elements companyElements = element.getElementsByAttributeValue("width", "110");
-					Element askElement = (Element) askElements.get(0);
-					Element answerElement = (Element) answerElements.get(0);
-					Element companyElement = (Element) companyElements.get(0);
+					Elements msgBoxElements = element.getElementsByClass("msgBox");
+					Elements answerBoxElements = element.getElementsByClass("answerBox");
+					Elements askElements = msgBoxElements.get(0).getElementsByTag("a");
+					Elements answerElements = answerBoxElements.get(0).getElementsByTag("a");
+					Element askElement = (Element) askElements.get(2);
+					Element answerElement = (Element) answerElements.get(2);
+					Element companyElement = (Element) askElements.get(1);
 					String ask = askElement.text();
 					String answer = answerElement.text();
 					String company = companyElement.text();

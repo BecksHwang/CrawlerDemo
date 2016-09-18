@@ -19,6 +19,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 
 import com.becks.entity.News;
+import com.becks.entity.StockLabel;
 import com.becks.entity.Target;
 import com.becks.util.StringUtil;
 
@@ -41,7 +42,10 @@ public class JczxUrlGrapService {
 	private TargetService targetService;
 	@Autowired
 	private NewsService newsService;
+	@Autowired
+	private StockLabelService stockLabelService;
 	static List<Target> targetList = new ArrayList<>();
+	static List<StockLabel> stockLableList = new ArrayList<>();
 	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(3);
 
 	public JczxUrlGrapService() {
@@ -57,8 +61,21 @@ public class JczxUrlGrapService {
 		}
 	}
 
+	public boolean jczxCheck(String title) {
+		boolean checkSight = false;
+		// 筛选匹配标签的消息
+		for (StockLabel stockLabel : stockLableList) {
+			if (title.contains(stockLabel.getLableName())) {
+				checkSight = true;
+				break;
+			}
+		}
+		return checkSight;
+	}
+
 	public void grap() {
 		targetList = targetService.findAll();
+		stockLableList = stockLabelService.findAll();
 		for (Target target : targetList) {
 			if (target.getMissionId() == CommonParameter.JCZX_URL) {
 				targetQueue.offer(target);
@@ -97,6 +114,8 @@ public class JczxUrlGrapService {
 		protected void performTarget(Target target) {
 			logger.error(
 					"抓取网址：" + "targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:" + target.getUrl());
+			if (target == null)
+				return;
 			try {
 				String urlstr = target.getUrl();
 				if (StringUtil.isNullOrEmpty(urlstr)) {
@@ -136,24 +155,27 @@ public class JczxUrlGrapService {
 						String href = "http://www.cninfo.com.cn/cninfo-new/disclosure/szse/bulletin_detail/true/"
 								+ announcementId + "?announceTime=" + date;
 						Set<Long> checkCodeSet = new HashSet<>();
-						Long checkCode = StringUtil.getCheckCode((title + href).getBytes());
-						if (!checkCodeSet.contains(checkCode) && !missionCheckCode(title, href, target.getId())) {
-							News news = new News();
-							news.setTitle(title);
-							news.setUrl(href);
-							news.setPickTime(new Timestamp(System.currentTimeMillis()));
-							news.setSource(target.getName());
-							news.setSourceUrl(target.getUrl());
-							news.setTargetId(target.getId());
-							news.setCheckCode(checkCode);
-							newsService.save(news);
-							checkCodeSet.add(checkCode);
-							logger.error("保存消息:" + news.getTitle() + "-网址：" + href);
-							logger.error("来源：targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:"
-									+ target.getUrl());
-							String unique = title + "-" + href + "-" + target.getId();
-							RedisAPI.set(CommonParameter.MISSION_CHECKCODE, unique);
-							System.gc();
+
+						if (jczxCheck(title)) {
+							Long checkCode = StringUtil.getCheckCode((title + href).getBytes());
+							if (!checkCodeSet.contains(checkCode) && !missionCheckCode(title, href, target.getId())) {
+								News news = new News();
+								news.setTitle(title);
+								news.setUrl(href);
+								news.setPickTime(new Timestamp(System.currentTimeMillis()));
+								news.setSource(target.getName());
+								news.setSourceUrl(target.getUrl());
+								news.setTargetId(target.getId());
+								news.setCheckCode(checkCode);
+								newsService.save(news);
+								checkCodeSet.add(checkCode);
+								logger.error("保存消息:" + news.getTitle() + "-网址：" + href);
+								logger.error("来源：targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:"
+										+ target.getUrl());
+								String unique = title + "-" + href + "-" + target.getId();
+								RedisAPI.set(CommonParameter.MISSION_CHECKCODE, unique);
+								System.gc();
+							}
 						}
 
 					}

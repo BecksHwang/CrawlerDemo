@@ -40,7 +40,7 @@ public class CommonUrlGrapService {
 	@Autowired
 	private NewsService newsService;
 	static List<Target> targetList = new ArrayList<>();
-	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(10);
+	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(20);
 
 	public CommonUrlGrapService() {
 
@@ -57,8 +57,6 @@ public class CommonUrlGrapService {
 
 	public void grap() {
 		targetList = targetService.findAll();
-		// CommonUrlGrapService commonUrlGrapService = new
-		// CommonUrlGrapService();
 		for (Target target : targetList) {
 			if (target.getMissionId() == CommonParameter.COMMON_URL) {
 				targetQueue.offer(target);
@@ -96,6 +94,8 @@ public class CommonUrlGrapService {
 		protected void performTarget(Target target) {
 			logger.error(
 					"抓取网址：" + "targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:" + target.getUrl());
+			if (target == null)
+				return;
 			try {
 				String urlstr = target.getUrl();
 				if (StringUtil.isNullOrEmpty(urlstr)) {

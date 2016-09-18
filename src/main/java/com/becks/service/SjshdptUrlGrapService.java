@@ -4,6 +4,7 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,23 +23,23 @@ import org.springframework.stereotype.Component;
 import com.becks.common.CommonParameter;
 import com.becks.entity.Interaction;
 import com.becks.entity.Target;
-import com.becks.util.GrapMethodUtil;
 import com.becks.util.RedisAPI;
+import com.becks.util.SendUrlUtil;
 import com.becks.util.StringUtil;
 /**
- * @Description: 全景网互动精华任务抓取程序
+ * @Description: 上交所互动平台任务抓取程序
  * @author BecksHwang
  * @date
  */
 @Component
-public class InteractionUrlGrapService {
-	static Logger logger = Logger.getLogger(InteractionUrlGrapService.class);
+public class SjshdptUrlGrapService {
+	static Logger logger = Logger.getLogger(SjshdptUrlGrapService.class);
 	@Autowired
 	private TargetService targetService;
 	@Autowired
 	private InteractionService interactionService;
 	static List<Target> targetList = new ArrayList<>();
-	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(5);
+	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(3);
 
 	public boolean missionCheckCode(String ask, String answer) {
 		String unique = ask + "-" + answer ;
@@ -54,12 +55,12 @@ public class InteractionUrlGrapService {
 	public void grap() {
 		targetList = targetService.findAll();
 		for (Target target : targetList) {
-			if (target.getMissionId() == CommonParameter.INTERACTION_URL) {
+			if (target.getMissionId() == CommonParameter.SJSHDPT_URL) {
 				targetQueue.offer(target);
 			}
 		}
 		for (int i = 0; i < 1; i++) {
-			logger.error("抓interction网址，启动第" + i + "个线程！");
+			logger.error("抓上交所互动平台网址，启动第" + i + "个线程！");
 			new Thread(this.new GrapThread()).start();
 		}
 	}
@@ -87,18 +88,17 @@ public class InteractionUrlGrapService {
 			}
 		}
 
+		@SuppressWarnings("static-access")
 		protected void performTarget(Target target) {
 			logger.error(
 					"抓取网址：" + "targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:" + target.getUrl());
-			if (target == null)
-				return;
 			try {
-				String urlstr = target.getUrl();
+				String urlstr = target.getUrl() + new Date().getTime();
 				if (StringUtil.isNullOrEmpty(urlstr)) {
 					return;
 				}
 				String html = null;
-				html = new GrapMethodUtil().getStringByUrl(urlstr);
+				html = new SendUrlUtil().getHtml(urlstr);
 				if (StringUtil.isNullOrEmpty(html)) {
 					logger.error("抓取内容为空，名称：" + target.getName() + "-URL:" + target.getUrl());
 					return;
@@ -132,18 +132,18 @@ public class InteractionUrlGrapService {
 				content = content.substring(begin, end);
 
 				Set<Long> checkCodeSet = new HashSet<>();
-				List<Element> elementList = document.getElementsByClass("req_box2");
+				List<Element> elementList = document.getElementsByClass("m_feed_item");
 				for (int e = 0; e < elementList.size(); e++) {
 					Element element = (Element) elementList.get(e);
-					Elements askElements = element.getElementsByClass("hd_td1");
-					Elements answerElements = element.getElementsByClass("hd_td3");
-					Elements companyElements = element.getElementsByAttributeValue("width", "110");
-					Element askElement = (Element) askElements.get(0);
-					Element answerElement = (Element) answerElements.get(0);
+					Elements allElements = element.getElementsByClass("m_feed_txt");
+					Element askElement = (Element) allElements.get(0);
+					Element answerElement = (Element) allElements.get(1);
+					Elements companyElements = askElement.getElementsByTag("a");
 					Element companyElement = (Element) companyElements.get(0);
 					String ask = askElement.text();
 					String answer = answerElement.text();
-					String company = companyElement.text();
+					String companystr = companyElement.text();
+					String company = companystr.substring(1, companystr.length());
 					if (true) {
 						Long checkCode = StringUtil.getCheckCode((ask + answer).getBytes());
 						// 标识唯一
@@ -153,7 +153,7 @@ public class InteractionUrlGrapService {
 							interaction.setAnswer(answer);
 							interaction.setPickTime(new Timestamp(System.currentTimeMillis()));
 							interaction.setSource(target.getName());
-							interaction.setSourceUrl(target.getUrl());
+							interaction.setSourceUrl("http://sns.sseinfo.com");
 							interaction.setTargetId(target.getId());
 							interaction.setCheckCode(checkCode);
 							interaction.setCompany(company);

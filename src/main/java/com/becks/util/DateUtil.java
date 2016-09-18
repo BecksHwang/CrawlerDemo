@@ -42,6 +42,17 @@ public class DateUtil {
 
 		return todayStart.getTime().getTime();
 	}
+	
+	public static Long getTodayZeroTimeStamp() {
+
+		Calendar todayStart = Calendar.getInstance();
+		todayStart.set(Calendar.HOUR_OF_DAY, 00);
+		todayStart.set(Calendar.MINUTE, 00);
+		todayStart.set(Calendar.SECOND, 00);
+		todayStart.set(Calendar.MILLISECOND, 0);
+
+		return todayStart.getTime().getTime();
+	}
 
 	public static boolean isToday(Date date) {
 		Long dateTime = date.getTime();

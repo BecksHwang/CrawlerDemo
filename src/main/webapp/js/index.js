@@ -1,3 +1,7 @@
+function toNewsList(){
+	window.open("/ggzzjc/news/newsList.do");
+}
+
 function getJson(url,time,func){
 	$.ajax({
 		type:'GET',
@@ -15,7 +19,7 @@ function getJson(url,time,func){
 
 // 左边！！
 function initGetJson(){
-	var url = '/ggzzjc/news/getNews';  //家蓓的url
+	var url = '/ggzzjc/news/getNews.do';  //家蓓的url
 	//var url = 'js/myData.json';  //安安的url
 	var time = null;
 	getJson(url,time,initData);
@@ -25,6 +29,10 @@ function initData(data){
 	for(var i=0;i<data.length;i++){
 		data[i].pickTime = moment(data[i].pickTime).format('YYYY-MM-DD HH:mm:ss');
 	}
+	//初始数据 升序
+	data.sort(function(a,b){
+		return new Date(a.pickTime.replace(/-/g, "/")) - new Date(b.pickTime.replace(/-/g, "/"));
+	});
 	vm1 = new Vue({
 		el: '#myRow',
 		data: {
@@ -33,14 +41,17 @@ function initData(data){
 	})
 }
 function refreshGetJson(){
-	var time = vm1.items[0].pickTime;
-	var options = '/ggzzjc/news/getNews';  //家蓓的url
+	vmIndex = vm1.items.length - 1;  //根据最后一个时间 拿新增的数据
+	var time = vm1.items[vmIndex].pickTime;
+	// var time = vm1.items[0].pickTime;
+	var options = '/ggzzjc/news/getNews.do';  //家蓓的url
 	var url = options + '?' + 'pickTime' + '=' + time;
 	//var url = 'js/myData2.json';  //安安的url
 	getJson(url,time,refreshData);
 }
 function refreshData(data){
-	vm1.items = data.concat(vm1.items);
+	// vm1.items = data.concat(vm1.items);
+	vm1.items = vm1.items.concat(data);
 	for(var i=0;i<vm1.items.length;i++){
 		vm1.items[i].pickTime = moment(vm1.items[i].pickTime).format('YYYY-MM-DD HH:mm:ss');
 	}
@@ -54,7 +65,7 @@ setInterval(refreshGetJson,5000);
 
 // 右边！！
 function initGetJson1(){
-	var url = '/ggzzjc/interaction/getInteractions';  //家蓓的url
+	var url = '/ggzzjc/interaction/getInteractions.do';  //家蓓的url
 	//var url = 'js/myDa.json';  //安安的url
 	var time = null;
 	getJson(url,time,initData1);
@@ -64,6 +75,12 @@ function initData1(data){
 	for(var i=0;i<data.length;i++){
 		data[i].pickTime = moment(data[i].pickTime).format('YYYY-MM-DD HH:mm:ss');
 	}
+	//初始数据 升序
+	data.sort(function(a,b){
+		return new Date(a.pickTime.replace(/-/g, "/")) - new Date(b.pickTime.replace(/-/g, "/"));
+	});
+	// console.log(data);
+	// console.log('aaa')
 	vm2 = new Vue({
 		el: '#myRow1',
 		data: {
@@ -72,14 +89,19 @@ function initData1(data){
 	})
 }
 function refreshGetJson1(){
-	var time = vm2.items2[0].pickTime;
-	var options = '/ggzzjc/interaction/getInteractions';  //家蓓的url
+	vmIndex = vm2.items2.length - 1;  //根据最后一个时间 拿新增的数据
+  // console.log(vmIndex)
+	var time = vm2.items2[vmIndex].pickTime;
+	var options = '/ggzzjc/interaction/getInteractions.do';  //家蓓的url
 	var url = options + '?' + 'pickTime' + '=' + time;
 	//var url = 'js/myDa2.json';  //安安的url
 	getJson(url,time,refreshData1);
 }
 function refreshData1(data){
-	vm2.items2 = data.concat(vm2.items2);
+	console.log(vmIndex);
+	console.log('data');
+	console.log(data);
+	vm2.items2 = vm2.items2.concat(data);  
 	for(var i=0;i<vm2.items2.length;i++){
 		vm2.items2[i].pickTime = moment(vm2.items2[i].pickTime).format('YYYY-MM-DD HH:mm:ss');
 	}

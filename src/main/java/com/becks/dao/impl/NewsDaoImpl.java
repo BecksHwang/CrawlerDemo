@@ -15,8 +15,11 @@ import org.springframework.stereotype.Repository;
 import com.becks.common.CommonParameter;
 import com.becks.entity.News;
 import com.becks.util.ConvertStringUtil;
+import com.becks.util.DateUtil;
 import com.becks.util.HqlPage;
 import com.becks.util.Page;
+import com.becks.util.StringUtil;
+import com.becks.vo.NewsQueryVo;
 
 /**
  * 创建时间：
@@ -53,7 +56,7 @@ public class NewsDaoImpl extends BaseDaoImpl<News> {
 		StringBuffer hql = new StringBuffer("from News ");
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		hql.append(" where pickTime > '" + formatter.format(news.getPickTime()) + "'");
-		createOrder(hql, CommonParameter.hqlOrderByDesc, "pickTime");
+		createOrder(hql, CommonParameter.hqlOrderByAsc, "pickTime");
 		return this.getListByHql(hql.toString(), new HqlPage());
 	}
 
@@ -117,6 +120,54 @@ public class NewsDaoImpl extends BaseDaoImpl<News> {
 		}
 
 		return sb;
+	}
+
+	public Page queryPage(Page page, NewsQueryVo qVo) {
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Page resultPage = new Page();
+		String hql = ConvertStringUtil.getSelectHqlByClass(News.class);
+		String hqlCount = "select count(*) " + ConvertStringUtil.getSelectHqlByClass(News.class);
+		StringBuffer condition = new StringBuffer();
+		if (!StringUtil.isNullOrEmpty(qVo.getTitle())) {
+			condition.append("and title like '%" + qVo.getTitle() + "%'");
+		}
+
+		if (!StringUtil.isNullOrEmpty(qVo.getSource())) {
+			condition.append("and source like '%" + qVo.getSource() + "%'");
+		}
+
+		if (qVo.getBeginDate() != null) {
+			condition.append("and pickTime >= '" + formatter.format(qVo.getBeginDate()) + "'");
+		}else{
+			condition.append("and pickTime >= '" + formatter.format(new DateUtil().getTodayZeroTimeStamp()) + "'");
+		}
+
+		if (qVo.getEndDate() != null) {
+			condition.append("and pickTime <= '" + formatter.format(qVo.getEndDate()) + "'");
+		}
+		hql += condition + "order by pickTime desc";
+		hqlCount += condition;
+		List<News> retList = null;
+		Session session = this.sessionFactory.openSession();
+		try {
+			session.getTransaction().begin();
+			Query query = (Query) session.createQuery(hql);
+			Query query2 = (Query) session.createQuery(hqlCount);
+			if (page != null) {
+				query.setFirstResult(page.getOffset());
+				query.setMaxResults(page.getPageSize());
+			}
+			retList = query.list(); // 得到每页的数据
+			int totleCount = Integer.valueOf(query2.list().get(0).toString());//得到数据条数
+			session.getTransaction().commit();
+			resultPage.setTotalRow(totleCount);
+			resultPage.setItems(retList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return resultPage;
 	}
 
 }

@@ -26,6 +26,7 @@ import com.becks.util.StringUtil;
 
 import com.becks.common.CommonParameter;
 import com.becks.util.RedisAPI;
+
 /**
  * @Description: 和讯公司网址任务抓取程序
  * @author BecksHwang
@@ -39,7 +40,7 @@ public class HeXunStockUrlGrapService {
 	@Autowired
 	private NewsService newsService;
 	static List<Target> targetList = new ArrayList<>();
-	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(3);
+	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(10);
 
 	public HeXunStockUrlGrapService() {
 
@@ -93,6 +94,8 @@ public class HeXunStockUrlGrapService {
 		protected void performTarget(Target target) {
 			logger.error(
 					"抓取网址：" + "targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:" + target.getUrl());
+			if (target == null)
+				return;
 			try {
 				String urlstr = target.getUrl();
 				if (StringUtil.isNullOrEmpty(urlstr)) {
@@ -104,7 +107,7 @@ public class HeXunStockUrlGrapService {
 					logger.error("抓取内容为空，名称：" + target.getName() + "-URL:" + target.getUrl());
 					return;
 				}
-				Document document = Jsoup.parse(html);
+
 				String content = html;
 				// 校验该网页是否有更新
 
@@ -131,7 +134,7 @@ public class HeXunStockUrlGrapService {
 					end = content.indexOf(target.getEndTag());
 				}
 				content = content.substring(begin, end);
-
+				Document document = Jsoup.parse(content);
 				Set<Long> checkCodeSet = new HashSet<>();
 				List<Element> elementList = document.getElementsByTag("a");
 				for (int e = 0; e < elementList.size(); e++) {

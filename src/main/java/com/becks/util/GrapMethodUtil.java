@@ -101,6 +101,7 @@ public class GrapMethodUtil {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		} finally {
@@ -108,6 +109,7 @@ public class GrapMethodUtil {
 				try {
 					br.close();
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
 					// e.printStackTrace();
 					logger.error(
 							GrapMethodUtil.class.getName() + "  urlGetString流未关闭:" + strURL + "\r\n" + e.getMessage());
@@ -117,6 +119,7 @@ public class GrapMethodUtil {
 				try {
 					inputStreamReader.close();
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
 					// e.printStackTrace();
 					logger.error(
 							GrapMethodUtil.class.getName() + "  urlGetString流未关闭:" + strURL + "\r\n" + e.getMessage());
@@ -126,6 +129,7 @@ public class GrapMethodUtil {
 				try {
 					inputStream.close();
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
 					// e.printStackTrace();
 					logger.error(
 							GrapMethodUtil.class.getName() + "  urlGetString流未关闭:" + strURL + "\r\n" + e.getMessage());
@@ -156,6 +160,7 @@ public class GrapMethodUtil {
 			inputStream = httpConn.getInputStream();
 			stringBuffer = new StringBuffer(new Source(inputStream).toString());
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			// e.printStackTrace();
 			logger.error(GrapMethodUtil.class.getName() + "  getStringByUrl抓取网页失败:" + strURL + "\r\n" + e.getMessage());
 		} finally {
@@ -163,6 +168,7 @@ public class GrapMethodUtil {
 				try {
 					br.close();
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
 					// e.printStackTrace();
 					logger.error(GrapMethodUtil.class.getName() + "  getStringByUrl流未关闭:" + strURL + "\r\n"
 							+ e.getMessage());
@@ -172,6 +178,7 @@ public class GrapMethodUtil {
 				try {
 					inputStream.close();
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
 					// e.printStackTrace();
 					logger.error(GrapMethodUtil.class.getName() + "  getStringByUrl流未关闭:" + strURL + "\r\n"
 							+ e.getMessage());
@@ -202,6 +209,7 @@ public class GrapMethodUtil {
 			inputStream = httpConn.getInputStream();
 			stringBuffer = new StringBuffer(new Source(inputStream).toString());
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			// e.printStackTrace();
 			logger.error(GrapMethodUtil.class.getName() + "  getStringByUrl抓取网页失败:" + strURL + "\r\n" + e.getMessage());
 		} finally {
@@ -209,6 +217,7 @@ public class GrapMethodUtil {
 				try {
 					br.close();
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
 					// e.printStackTrace();
 					logger.error(GrapMethodUtil.class.getName() + "  getStringByUrl流未关闭:" + strURL + "\r\n"
 							+ e.getMessage());
@@ -218,6 +227,7 @@ public class GrapMethodUtil {
 				try {
 					inputStream.close();
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
 					// e.printStackTrace();
 					logger.error(GrapMethodUtil.class.getName() + "  getStringByUrl流未关闭:" + strURL + "\r\n"
 							+ e.getMessage());
