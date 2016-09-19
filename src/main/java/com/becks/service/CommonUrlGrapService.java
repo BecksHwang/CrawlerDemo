@@ -108,7 +108,6 @@ public class CommonUrlGrapService {
 				Document document = Jsoup.parse(html);
 				String content = html;
 				// 校验该网页是否有更新
-
 				String code = DigestUtils.md5Hex(content);
 				if (code.equals(target.getMd5())) {
 					return;
@@ -166,7 +165,6 @@ public class CommonUrlGrapService {
 							String unique = title + "-" + href + "-" + target.getId();
 							RedisAPI.set(CommonParameter.MISSION_CHECKCODE, unique);
 							System.gc();
-
 						}
 					}
 				}

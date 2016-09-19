@@ -185,9 +185,7 @@ public class JczxUrlGrapService {
 				logger.error("抓取失败的网址:" + target.getUrl());
 				e.printStackTrace();
 			}
-
 		}
-
 	}
 
 	public static synchronized Target getTarget() {

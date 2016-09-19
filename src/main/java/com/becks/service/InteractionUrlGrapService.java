@@ -128,7 +128,6 @@ public class InteractionUrlGrapService {
 					end = content.indexOf(target.getEndTag());
 				}
 				content = content.substring(begin, end);
-
 				Set<Long> checkCodeSet = new HashSet<>();
 				List<Element> elementList = document.getElementsByClass("req_box2");
 				for (int e = 0; e < elementList.size(); e++) {

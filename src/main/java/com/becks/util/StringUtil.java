@@ -23,7 +23,6 @@ public class StringUtil {
 		if (input.contains("_")) {
 			input = input.replace("_", "-");
 		}
-
 		if (input.contains("-")) {
 			String[] words = input.split("-");
 			input = "";
@@ -44,7 +43,6 @@ public class StringUtil {
 				e.printStackTrace();
 			}
 		}
-
 		return value;
 	}
 
@@ -56,14 +54,12 @@ public class StringUtil {
 				e.printStackTrace();
 			}
 		}
-
 		return value;
 	}
 
 	public static String trimPunctuation(String value) {
 		if (value == null)
 			return null;
-
 		return value.replaceAll("\\pP", "").replaceAll("\\s*", "");
 	}
 

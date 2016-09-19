@@ -131,7 +131,6 @@ public class JrjggsdUrlGrapService {
 					String href = "http://stock.jrj.com.cn/share," + stockcode + ",ggcontent.shtml?discId="
 							+ ja.getJSONArray(i).getString(0);
 					String title = ja.getJSONArray(i).getString(2);
-
 					Set<Long> checkCodeSet = new HashSet<>();
 					Long checkCode = StringUtil.getCheckCode((title + href).getBytes());
 					if (!checkCodeSet.contains(checkCode) && !missionCheckCode(title, href, target.getId())) {
@@ -160,9 +159,7 @@ public class JrjggsdUrlGrapService {
 				logger.error("抓取失败的网址:" + target.getUrl());
 				e.printStackTrace();
 			}
-
 		}
-
 	}
 
 	public static synchronized Target getTarget() {
@@ -173,7 +170,6 @@ public class JrjggsdUrlGrapService {
 	}
 
 	public static void main(String[] args) {
-
 	}
 
 }

@@ -52,7 +52,6 @@ public class SendUrlUtil {
 				}
 			}
 		} catch (UnsupportedEncodingException e1) {
-
 			e1.printStackTrace();
 		}
 		url += encodeUrl;
@@ -64,7 +63,6 @@ public class SendUrlUtil {
 			if (statusCode != HttpStatus.SC_OK) {
 				System.err.println("Method failed: " + method.getStatusLine());
 			}
-
 			byte[] responseBody = method.getResponseBody();
 			jsonObject = JSONObject.fromObject(new String(responseBody, "utf-8"));
 		} catch (HttpException e) {
@@ -72,7 +70,6 @@ public class SendUrlUtil {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		return jsonObject;
 	}
 
@@ -114,7 +111,6 @@ public class SendUrlUtil {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 		return jsonObject;
 	}
 
@@ -270,7 +266,6 @@ public class SendUrlUtil {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		return jsonObject;
 	}
 

@@ -107,7 +107,6 @@ public class HeXunStockUrlGrapService {
 
 				String content = html;
 				// 校验该网页是否有更新
-
 				String code = DigestUtils.md5Hex(content);
 				if (code.equals(target.getMd5())) {
 					return;
@@ -174,9 +173,7 @@ public class HeXunStockUrlGrapService {
 				logger.error("抓取失败的网址:" + target.getUrl());
 				e.printStackTrace();
 			}
-
 		}
-
 	}
 
 	public static synchronized Target getTarget() {
@@ -187,7 +184,6 @@ public class HeXunStockUrlGrapService {
 	}
 
 	public static void main(String[] args) {
-
 	}
 
 }

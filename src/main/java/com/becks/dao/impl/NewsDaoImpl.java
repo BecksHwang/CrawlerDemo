@@ -96,20 +96,16 @@ public class NewsDaoImpl extends BaseDaoImpl<News> {
 				}
 			}
 			retList = query.list(); // 得到每页的数据
-
 			session.getTransaction().commit();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			session.close();
 		}
-
 		return retList;
 	}
 
 	public StringBuffer createOrder(StringBuffer sb, String orderBy, String orderStr) {
-
 		if (orderBy == null || orderBy.equals("")) {
 			return sb;
 		}
@@ -118,7 +114,6 @@ public class NewsDaoImpl extends BaseDaoImpl<News> {
 		} else if (orderBy.equals(CommonParameter.hqlOrderByDesc)) {
 			sb.append(" order by " + orderStr + " desc ");
 		}
-
 		return sb;
 	}
 
@@ -131,17 +126,14 @@ public class NewsDaoImpl extends BaseDaoImpl<News> {
 		if (!StringUtil.isNullOrEmpty(qVo.getTitle())) {
 			condition.append("and title like '%" + qVo.getTitle() + "%'");
 		}
-
 		if (!StringUtil.isNullOrEmpty(qVo.getSource())) {
 			condition.append("and source like '%" + qVo.getSource() + "%'");
 		}
-
 		if (qVo.getBeginDate() != null) {
 			condition.append("and pickTime >= '" + formatter.format(qVo.getBeginDate()) + "'");
 		}else{
 			condition.append("and pickTime >= '" + formatter.format(new DateUtil().getTodayZeroTimeStamp()) + "'");
 		}
-
 		if (qVo.getEndDate() != null) {
 			condition.append("and pickTime <= '" + formatter.format(qVo.getEndDate()) + "'");
 		}
@@ -158,7 +150,7 @@ public class NewsDaoImpl extends BaseDaoImpl<News> {
 				query.setMaxResults(page.getPageSize());
 			}
 			retList = query.list(); // 得到每页的数据
-			int totleCount = Integer.valueOf(query2.list().get(0).toString());//得到数据条数
+			int totleCount = Integer.valueOf(query2.list().get(0).toString());// 得到数据条数
 			session.getTransaction().commit();
 			resultPage.setTotalRow(totleCount);
 			resultPage.setItems(retList);

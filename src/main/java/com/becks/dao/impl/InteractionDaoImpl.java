@@ -92,20 +92,16 @@ public class InteractionDaoImpl extends BaseDaoImpl<Interaction> {
 				}
 			}
 			retList = query.list(); // 得到每页的数据
-
 			session.getTransaction().commit();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			session.close();
 		}
-
 		return retList;
 	}
 
 	public StringBuffer createOrder(StringBuffer sb, String orderBy, String orderStr) {
-
 		if (orderBy == null || orderBy.equals("")) {
 			return sb;
 		}
@@ -114,7 +110,6 @@ public class InteractionDaoImpl extends BaseDaoImpl<Interaction> {
 		} else if (orderBy.equals(CommonParameter.hqlOrderByDesc)) {
 			sb.append(" order by " + orderStr + " desc ");
 		}
-
 		return sb;
 	}
 

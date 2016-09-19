@@ -132,7 +132,6 @@ public class ThsggsdUrlGrapService {
 				Document document = Jsoup.parse(html);
 				String content = html;
 				// 校验该网页是否有更新
-
 				String code = DigestUtils.md5Hex(content);
 				if (code.equals(target.getMd5())) {
 					return;
@@ -191,7 +190,6 @@ public class ThsggsdUrlGrapService {
 									+ target.getId();
 							RedisAPI.set(CommonParameter.MISSION_CHECKCODE, unique);
 							System.gc();
-
 						}
 					}
 				}
@@ -201,9 +199,7 @@ public class ThsggsdUrlGrapService {
 				logger.error("抓取失败的网址:" + target.getUrl());
 				e.printStackTrace();
 			}
-
 		}
-
 	}
 
 	public static synchronized Target getTarget() {

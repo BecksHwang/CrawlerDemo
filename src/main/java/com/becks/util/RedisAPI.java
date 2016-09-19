@@ -58,7 +58,6 @@ public class RedisAPI {
 	 */
 	public static String get(String key) {
 		String value = null;
-
 		JedisPool pool = null;
 		Jedis jedis = null;
 		try {
@@ -73,7 +72,6 @@ public class RedisAPI {
 			// 返还到连接池
 			returnResource(pool, jedis);
 		}
-
 		return value;
 	}
 
@@ -85,7 +83,6 @@ public class RedisAPI {
 	 */
 	public static Boolean get(String key, String value) {
 		Boolean isExists = false;
-
 		JedisPool pool = null;
 		Jedis jedis = null;
 		try {
@@ -101,7 +98,6 @@ public class RedisAPI {
 			// 返还到连接池
 			returnResource(pool, jedis);
 		}
-
 		return isExists;
 	}
 
@@ -122,7 +118,6 @@ public class RedisAPI {
 			// 返还到连接池
 			returnResource(pool, jedis);
 		}
-
 	}
 
 	public static void main(String[] args) {

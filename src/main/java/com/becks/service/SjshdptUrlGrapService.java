@@ -50,8 +50,6 @@ public class SjshdptUrlGrapService {
 		}
 	}
 
-	
-
 	public void grap() {
 		targetList = targetService.findAll();
 		for (Target target : targetList) {
@@ -106,7 +104,6 @@ public class SjshdptUrlGrapService {
 				Document document = Jsoup.parse(html);
 				String content = html;
 				// 校验该网页是否有更新
-
 				String code = DigestUtils.md5Hex(content);
 				if (code.equals(target.getMd5())) {
 					return;
@@ -174,9 +171,7 @@ public class SjshdptUrlGrapService {
 				logger.error("抓取失败的网址:" + target.getUrl());
 				e.printStackTrace();
 			}
-
 		}
-
 	}
 
 	public static synchronized Target getTarget() {
