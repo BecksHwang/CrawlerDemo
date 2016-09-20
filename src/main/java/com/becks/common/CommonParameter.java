@@ -13,7 +13,7 @@ public class CommonParameter {
 	public static String hqlOrderByDesc = "hqlOrderByDesc";
 
 	// 判断新闻是否存在的唯一标识
-	public static final String MISSION_CHECKCODE = "MISSION_CHECKCODE_GGZZJC";
+	public static final String MISSION_CHECKCODE = "MISSION_CHECKCODE_CRAWLERDEMO";
 	// 判断问答是否存在的唯一标识
 	public static final String MISSION_CHECKCODE_ITRCT = "MISSION_CHECKCODE_ITRCT";
 	// 获取最新消息
