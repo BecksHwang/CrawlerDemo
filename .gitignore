@@ -1,9 +1,8 @@
 /bin/
-
-/target
-
 target/
-
-.setting/
-
+/.settings/
+.svn/
 *.class
+/.classpath
+/.project
+/.tern-project
