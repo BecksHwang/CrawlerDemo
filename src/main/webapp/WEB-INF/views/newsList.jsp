@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>个股追踪监测系统查询页面</title>
+<title>抓取展示Demo查询页面</title>
 <link rel="stylesheet" href="../css/bootstrap.min.css">
 <link rel="stylesheet" href="../css/bootstrap-table.css">
 <link rel="stylesheet" href="../css/bootstrap-datetimepicker-standalone.css">
