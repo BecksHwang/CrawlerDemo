@@ -3,6 +3,8 @@ package CrawlerDemo;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +22,9 @@ import com.becks.service.StockLabelService;
 import com.becks.service.TargetService;
 import com.becks.service.UserService;
 
+import redis.clients.jedis.ShardedJedis;
+import redis.clients.jedis.ShardedJedisPool;
+
 /**
  * 创建时间：
  * 
@@ -27,7 +32,7 @@ import com.becks.service.UserService;
  * @version
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:spring.xml", "classpath:spring-hibernate.xml" })
+@ContextConfiguration(locations = { "classpath:spring.xml", "classpath:spring-hibernate.xml","classpath:spring-redis.xml" })
 @Transactional
 public class TestService {
 
@@ -44,6 +49,12 @@ public class TestService {
 
 	@Autowired
 	private StockLabelService stockLabelService;
+	
+	@Resource
+	private ShardedJedisPool shardedJedisPool;
+	
+	@Resource
+	private ShardedJedisPool shardedJedisPool2;
 
 	@Test
 	public void save() {
@@ -111,5 +122,20 @@ public class TestService {
 		}
 
 	}
+	
+	@Test
+	public void redisTest() throws Exception {
+		
+		ShardedJedis jedis1 =  shardedJedisPool.getResource();
+		jedis1.set("shardedJedisPool11", "shardedJedisPool11");
+		shardedJedisPool.returnResourceObject(jedis1);
+
+		/*ShardedJedis jedis =  shardedJedisPool2.getResource();
+		jedis.set("shardedJedisPool2", "shardedJedisPool2");
+		shardedJedisPool2.returnResourceObject(jedis);*/
+
+	}
+	
+	
 
 }

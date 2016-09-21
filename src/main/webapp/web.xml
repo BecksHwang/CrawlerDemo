@@ -7,8 +7,8 @@
     <display-name>ggzzcj</display-name>  
   
     <context-param>  
-        <param-name>contextConfigLocation</param-name>  
-        <param-value>classpath:spring.xml,classpath:spring-hibernate.xml</param-value>  
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:spring.xml,classpath:spring-hibernate.xml,classpath:spring-redis.xml</param-value>  
     </context-param>  
   
     <filter>  

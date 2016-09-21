@@ -50,7 +50,7 @@ public class StockTrackGrapDateMission implements ApplicationListener {
 			// 确保抓取任务只启动一次
 			isStart = false;
 			// 启动common网址抓取任务
-			commonUrlGrapService.grap();
+			/*commonUrlGrapService.grap();
 			// 启动同花顺公告速递网址抓取任务
 			thsggsdUrlGrapService.grap();
 			// 启动全景网互动精华网址抓取任务
@@ -68,7 +68,7 @@ public class StockTrackGrapDateMission implements ApplicationListener {
 			// 启动上交所互动平台网址抓取任务
 			sjshdptUrlGrapService.grap();
 			// 启动深交所互动易网址抓取任务
-			sjshdyUrlGrapService.grap();
+			sjshdyUrlGrapService.grap();*/
 		}
 	}
 

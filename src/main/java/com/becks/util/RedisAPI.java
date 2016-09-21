@@ -1,8 +1,12 @@
 package com.becks.util;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.ShardedJedis;
+import redis.clients.jedis.ShardedJedisPool;
 
 /**
  * 创建时间：
@@ -12,32 +16,9 @@ import redis.clients.jedis.JedisPoolConfig;
  * @version
  */
 public class RedisAPI {
-	private static JedisPool pool = null;
-
-	/**
-	 * 构建redis连接池
-	 * 
-	 * @param ip
-	 * @param port
-	 * @return JedisPool
-	 */
-	public static JedisPool getPool() {
-		if (pool == null) {
-			JedisPoolConfig config = new JedisPoolConfig();
-			// 控制一个pool可分配多少个jedis实例，通过pool.getResource()来获取；
-			// 如果赋值为-1，则表示不限制；如果pool已经分配了maxActive个jedis实例，则此时pool的状态为exhausted(耗尽)。
-			config.setMaxActive(300);
-			// 控制一个pool最多有多少个状态为idle(空闲的)的jedis实例。
-			config.setMaxIdle(5);
-			// 表示当borrow(引入)一个jedis实例时，最大的等待时间，如果超过等待时间，则直接抛出JedisConnectionException；
-			config.setMaxWait(1000 * 100);
-			// 在borrow一个jedis实例时，是否提前进行validate操作；如果为true，则得到的jedis实例均是可用的；
-			config.setTestOnBorrow(true);
-			//pool = new JedisPool(config, "127.0.0.1", 6379, 10*1000, "password", 2);
-			pool = new JedisPool(config, "127.0.0.1", 6379);
-		}
-		return pool;
-	}
+	
+	@Autowired
+	private static ShardedJedisPool shardedJedisPool;
 
 	/**
 	 * 返还到连接池
@@ -45,9 +26,9 @@ public class RedisAPI {
 	 * @param pool
 	 * @param redis
 	 */
-	public static void returnResource(JedisPool pool, Jedis redis) {
+	public static void returnResource(ShardedJedisPool jedisPool, ShardedJedis redis) {
 		if (redis != null) {
-			pool.returnResource(redis);
+			jedisPool.returnResourceObject(redis);
 		}
 	}
 
@@ -59,19 +40,17 @@ public class RedisAPI {
 	 */
 	public static String get(String key) {
 		String value = null;
-		JedisPool pool = null;
-		Jedis jedis = null;
+		ShardedJedis jedis = null;
 		try {
-			pool = getPool();
-			jedis = pool.getResource();
+			jedis = shardedJedisPool.getResource();
 			value = jedis.get(key);
 		} catch (Exception e) {
 			// 释放redis对象
-			pool.returnBrokenResource(jedis);
+			shardedJedisPool.returnResourceObject(jedis);
 			e.printStackTrace();
 		} finally {
 			// 返还到连接池
-			returnResource(pool, jedis);
+			returnResource(shardedJedisPool, jedis);
 		}
 		return value;
 	}
@@ -84,43 +63,47 @@ public class RedisAPI {
 	 */
 	public static Boolean get(String key, String value) {
 		Boolean isExists = false;
-		JedisPool pool = null;
-		Jedis jedis = null;
+		ShardedJedis jedis = null;
 		try {
-			pool = getPool();
-			jedis = pool.getResource();
+			jedis = shardedJedisPool.getResource();
 			// value = jedis.get(key);
 			isExists = jedis.sismember(key, value);
 		} catch (Exception e) {
 			// 释放redis对象
-			pool.returnBrokenResource(jedis);
+			shardedJedisPool.returnResourceObject(jedis);
 			e.printStackTrace();
 		} finally {
 			// 返还到连接池
-			returnResource(pool, jedis);
+			returnResource(shardedJedisPool, jedis);
 		}
 		return isExists;
 	}
 
 	public static void set(String key, String value) {
 
-		JedisPool pool = null;
-		Jedis jedis = null;
+		ShardedJedis jedis = null;
 		try {
-			pool = getPool();
-			jedis = pool.getResource();
-			// value = jedis.get(key);
+			jedis = shardedJedisPool.getResource();
 			jedis.sadd(key, value);
 		} catch (Exception e) {
 			// 释放redis对象
-			pool.returnBrokenResource(jedis);
+			shardedJedisPool.returnResourceObject(jedis);
 			e.printStackTrace();
 		} finally {
 			// 返还到连接池
-			returnResource(pool, jedis);
+			returnResource(shardedJedisPool, jedis);
 		}
 	}
 
+	public static ShardedJedisPool getShardedJedisPool() {
+		return shardedJedisPool;
+	}
+
+	public static void setShardedJedisPool(ShardedJedisPool shardedJedisPool) {
+		RedisAPI.shardedJedisPool = shardedJedisPool;
+	}
+
 	public static void main(String[] args) {
+		new RedisAPI().set("RedisAPI22", "RedisAPI222");
 	}
 }
