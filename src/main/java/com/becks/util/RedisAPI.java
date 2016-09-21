@@ -33,6 +33,7 @@ public class RedisAPI {
 			config.setMaxWait(1000 * 100);
 			// 在borrow一个jedis实例时，是否提前进行validate操作；如果为true，则得到的jedis实例均是可用的；
 			config.setTestOnBorrow(true);
+			//pool = new JedisPool(config, "127.0.0.1", 6379, 10*1000, "password", 2);
 			pool = new JedisPool(config, "127.0.0.1", 6379);
 		}
 		return pool;
