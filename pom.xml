@@ -154,6 +154,12 @@
     		<artifactId>jsoup</artifactId>
     		<version>1.8.1</version>
 		</dependency>
+		
+		<!-- poi -->
+		<dependency><groupId>org.apache.poi</groupId>  
+ 			<artifactId>poi-ooxml</artifactId>  
+ 			<version>3.8</version>  
+		</dependency>
     	
     	<!-- pdfbox -->
     	<dependency>

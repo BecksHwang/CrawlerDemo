@@ -18,6 +18,7 @@ import com.becks.entity.StockLabel;
 import com.becks.entity.Target;
 import com.becks.entity.User;
 import com.becks.service.NewsService;
+import com.becks.service.StockInfoService;
 import com.becks.service.StockLabelService;
 import com.becks.service.TargetService;
 import com.becks.service.UserService;
@@ -32,7 +33,8 @@ import redis.clients.jedis.ShardedJedisPool;
  * @version
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:spring.xml", "classpath:spring-hibernate.xml","classpath:spring-redis.xml" })
+@ContextConfiguration(locations = { "classpath:spring.xml", "classpath:spring-hibernate.xml",
+		"classpath:spring-redis.xml" })
 @Transactional
 public class TestService {
 
@@ -50,9 +52,12 @@ public class TestService {
 	@Autowired
 	private StockLabelService stockLabelService;
 	
+	@Autowired
+	private StockInfoService StockInfoService;
+
 	@Resource
 	private ShardedJedisPool shardedJedisPool;
-	
+
 	@Resource
 	private ShardedJedisPool shardedJedisPool2;
 
@@ -122,20 +127,20 @@ public class TestService {
 		}
 
 	}
-	
+
 	@Test
 	public void redisTest() throws Exception {
-		
-		ShardedJedis jedis1 =  shardedJedisPool.getResource();
+
+		ShardedJedis jedis1 = shardedJedisPool.getResource();
 		jedis1.set("shardedJedisPool11", "shardedJedisPool11");
 		shardedJedisPool.returnResourceObject(jedis1);
 
-		/*ShardedJedis jedis =  shardedJedisPool2.getResource();
-		jedis.set("shardedJedisPool2", "shardedJedisPool2");
-		shardedJedisPool2.returnResourceObject(jedis);*/
+		/*
+		 * ShardedJedis jedis = shardedJedisPool2.getResource();
+		 * jedis.set("shardedJedisPool2", "shardedJedisPool2");
+		 * shardedJedisPool2.returnResourceObject(jedis);
+		 */
 
 	}
 	
-	
-
 }
