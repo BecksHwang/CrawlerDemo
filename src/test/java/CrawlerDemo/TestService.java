@@ -141,4 +141,14 @@ public class TestService {
 
 	}
 	
+	@Test
+	public void redisTestSetex() throws Exception {
+		ShardedJedis jedis1 = shardedJedisPool1.getResource();
+		jedis1.setex("key01", 10, "value01-time10second");
+		System.out.println("key01:" + jedis1.get("key01"));
+		Thread.sleep(12000);
+		System.out.println("after 12s key01:" + jedis1.get("key01"));
+		shardedJedisPool1.returnResourceObject(jedis1);
+	}
+	
 }
