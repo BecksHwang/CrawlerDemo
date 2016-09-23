@@ -1,5 +1,7 @@
 package com.becks.util;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import redis.clients.jedis.Jedis;
@@ -17,8 +19,13 @@ import redis.clients.jedis.ShardedJedisPool;
  */
 public class RedisAPI {
 	
-	@Autowired
-	private static ShardedJedisPool shardedJedisPool;
+	private static ShardedJedisPool jedisPool;
+	
+	
+
+	public RedisAPI(ShardedJedisPool shardedJedisPool) {
+		this.jedisPool = shardedJedisPool;
+	}
 
 	/**
 	 * 返还到连接池
@@ -42,15 +49,15 @@ public class RedisAPI {
 		String value = null;
 		ShardedJedis jedis = null;
 		try {
-			jedis = shardedJedisPool.getResource();
+			jedis = jedisPool.getResource();
 			value = jedis.get(key);
 		} catch (Exception e) {
 			// 释放redis对象
-			shardedJedisPool.returnResourceObject(jedis);
+			jedisPool.returnResourceObject(jedis);
 			e.printStackTrace();
 		} finally {
 			// 返还到连接池
-			returnResource(shardedJedisPool, jedis);
+			returnResource(jedisPool, jedis);
 		}
 		return value;
 	}
@@ -65,16 +72,16 @@ public class RedisAPI {
 		Boolean isExists = false;
 		ShardedJedis jedis = null;
 		try {
-			jedis = shardedJedisPool.getResource();
+			jedis = jedisPool.getResource();
 			// value = jedis.get(key);
 			isExists = jedis.sismember(key, value);
 		} catch (Exception e) {
 			// 释放redis对象
-			shardedJedisPool.returnResourceObject(jedis);
+			jedisPool.returnResourceObject(jedis);
 			e.printStackTrace();
 		} finally {
 			// 返还到连接池
-			returnResource(shardedJedisPool, jedis);
+			returnResource(jedisPool, jedis);
 		}
 		return isExists;
 	}
@@ -83,27 +90,18 @@ public class RedisAPI {
 
 		ShardedJedis jedis = null;
 		try {
-			jedis = shardedJedisPool.getResource();
+			jedis = jedisPool.getResource();
 			jedis.sadd(key, value);
 		} catch (Exception e) {
 			// 释放redis对象
-			shardedJedisPool.returnResourceObject(jedis);
+			jedisPool.returnResourceObject(jedis);
 			e.printStackTrace();
 		} finally {
 			// 返还到连接池
-			returnResource(shardedJedisPool, jedis);
+			returnResource(jedisPool, jedis);
 		}
 	}
 
-	public static ShardedJedisPool getShardedJedisPool() {
-		return shardedJedisPool;
-	}
-
-	public static void setShardedJedisPool(ShardedJedisPool shardedJedisPool) {
-		RedisAPI.shardedJedisPool = shardedJedisPool;
-	}
-
 	public static void main(String[] args) {
-		new RedisAPI().set("RedisAPI22", "RedisAPI222");
 	}
 }

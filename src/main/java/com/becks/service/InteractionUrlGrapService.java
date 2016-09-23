@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -25,6 +27,8 @@ import com.becks.entity.Target;
 import com.becks.util.GrapMethodUtil;
 import com.becks.util.RedisAPI;
 import com.becks.util.StringUtil;
+
+import redis.clients.jedis.ShardedJedisPool;
 /**
  * @Description: 全景网互动精华任务抓取程序
  * @author BecksHwang
@@ -37,12 +41,17 @@ public class InteractionUrlGrapService {
 	private TargetService targetService;
 	@Autowired
 	private InteractionService interactionService;
+	@Resource
+	private ShardedJedisPool shardedJedisPool;
+	
 	static List<Target> targetList = new ArrayList<>();
 	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(5);
+	 private RedisAPI redisAPI = null;
 
+	@SuppressWarnings("static-access")
 	public boolean missionCheckCode(String ask, String answer) {
 		String unique = ask + "-" + answer ;
-		if (RedisAPI.get(CommonParameter.MISSION_CHECKCODE_ITRCT, unique) || interactionService.isExits(ask, answer)) {
+		if (redisAPI.get(CommonParameter.MISSION_CHECKCODE_ITRCT, unique) || interactionService.isExits(ask, answer)) {
 			return true;
 		} else {
 			return false;
@@ -53,6 +62,8 @@ public class InteractionUrlGrapService {
 
 	public void grap() {
 		targetList = targetService.findAll();
+		System.out.println(shardedJedisPool);
+		redisAPI = new RedisAPI(shardedJedisPool);
 		for (Target target : targetList) {
 			if (target.getMissionId() == CommonParameter.INTERACTION_URL) {
 				targetQueue.offer(target);
@@ -87,6 +98,7 @@ public class InteractionUrlGrapService {
 			}
 		}
 
+		@SuppressWarnings("static-access")
 		protected void performTarget(Target target) {
 			logger.error(
 					"抓取网址：" + "targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:" + target.getUrl());
@@ -160,7 +172,7 @@ public class InteractionUrlGrapService {
 							logger.error("来源：targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:"
 									+ target.getUrl());
 							String unique = ask + "-" + answer;
-							RedisAPI.set(CommonParameter.MISSION_CHECKCODE_ITRCT, unique);
+							redisAPI.set(CommonParameter.MISSION_CHECKCODE_ITRCT, unique);
 							System.gc();
 						}
 					}
