@@ -62,7 +62,6 @@ public class InteractionUrlGrapService {
 
 	public void grap() {
 		targetList = targetService.findAll();
-		System.out.println(shardedJedisPool);
 		redisAPI = new RedisAPI(shardedJedisPool);
 		for (Target target : targetList) {
 			if (target.getMissionId() == CommonParameter.INTERACTION_URL) {
