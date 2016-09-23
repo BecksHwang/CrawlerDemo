@@ -1,12 +1,5 @@
 package com.becks.util;
 
-import javax.annotation.Resource;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.ShardedJedis;
 import redis.clients.jedis.ShardedJedisPool;
 
@@ -23,6 +16,7 @@ public class RedisAPI {
 	
 	
 
+	@SuppressWarnings("static-access")
 	public RedisAPI(ShardedJedisPool shardedJedisPool) {
 		this.jedisPool = shardedJedisPool;
 	}
@@ -73,7 +67,6 @@ public class RedisAPI {
 		ShardedJedis jedis = null;
 		try {
 			jedis = jedisPool.getResource();
-			// value = jedis.get(key);
 			isExists = jedis.sismember(key, value);
 		} catch (Exception e) {
 			// 释放redis对象
