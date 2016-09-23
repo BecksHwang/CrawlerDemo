@@ -17,37 +17,42 @@
     http://www.springframework.org/schema/util
     http://www.springframework.org/schema/util/spring-util-3.2.xsd">
  
-  <!-- 引入jedis配置文件 -->
-    <context:property-placeholder location="classpath:redis.properties"
-    ignore-unresolvable="true" />
+  	<!-- 引入jedis配置文件 -->
+    <context:property-placeholder location="classpath:redis.properties" ignore-unresolvable="true" />
    
     <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
-        <property name="maxTotal" value="50"/>
-        <property name="maxIdle" value="10"/>
+    	<!-- 控制一个pool可分配多少个jedis实例，通过pool.getResource()来获取；
+		            如果赋值为-1，则表示不限制；如果pool已经分配了maxActive个jedis实例，则此时pool的状态为exhausted(耗尽)。-->
+		<property name="maxTotal" value="${redis.pool.maxActive}"/>
+        <!-- 控制一个pool最多有多少个状态为idle(空闲的)的jedis实例。 -->
+        <property name="maxIdle" value="${redis.pool.maxIdle}"/>
+        <!-- 表示当borrow(引入)一个jedis实例时，最大的等待时间，如果超过等待时间，则直接抛出JedisConnectionException；-->
+        <property name="maxWaitMillis" value="${redis.pool.maxWaitMillis}"/>
+        <!-- 在borrow一个jedis实例时，是否提前进行validate操作；如果为true，则得到的jedis实例均是可用的； -->
         <property name="testOnBorrow" value="true"/>
         <property name="testOnReturn" value="true"/>
     </bean>
    
-     <bean id="shardedJedisPool" class="redis.clients.jedis.ShardedJedisPool"  scope="singleton">
-        <constructor-arg index="0" ref="jedisPoolConfig" />
-        <constructor-arg index="1">
-            <list>
-                <bean class="redis.clients.jedis.JedisShardInfo">
-					<constructor-arg name="host" value="127.0.0.1" />
-					<constructor-arg name="port" value="6379" />
-					<constructor-arg name="timeout" value="50000" />
-				</bean>
-            </list>
-        </constructor-arg>
-    </bean>
+    <bean id="shardedJedisPool1" class="redis.clients.jedis.ShardedJedisPool" scope="singleton">
+	<constructor-arg index="0" ref="jedisPoolConfig" />
+	<constructor-arg index="1">
+		<list>
+			<bean class="redis.clients.jedis.JedisShardInfo">
+				<constructor-arg name="host" value="${redis1.host}" />
+				<constructor-arg name="port" value="${redis1.port}" />
+				<constructor-arg name="timeout" value="${redis1.timeout}" />
+			</bean>
+		</list>
+	</constructor-arg>
+	</bean>
     
     <bean id="shardedJedisPool2" class="redis.clients.jedis.ShardedJedisPool"  scope="singleton">
         <constructor-arg index="0" ref="jedisPoolConfig" />
         <constructor-arg index="1">
             <list>
                 <bean class="redis.clients.jedis.JedisShardInfo">
-                	<!-- 高级url方式 带密码，DB，除了此方式还可重写 JedisShardInfo构造方法-->
-					<constructor-arg name="host" value="redis://:fid123@127.0.0.1:6379/5" />
+                	<!-- 高级host方式url,带密码，DB，除了此方式还可重写 JedisShardInfo构造方法-->
+					<constructor-arg name="host" value="${redis2.url}" />
 				</bean>
             </list>
         </constructor-arg>

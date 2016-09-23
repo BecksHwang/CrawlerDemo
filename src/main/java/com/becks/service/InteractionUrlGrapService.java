@@ -42,7 +42,7 @@ public class InteractionUrlGrapService {
 	@Autowired
 	private InteractionService interactionService;
 	@Resource
-	private ShardedJedisPool shardedJedisPool;
+	private ShardedJedisPool shardedJedisPool1;
 	
 	static List<Target> targetList = new ArrayList<>();
 	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(5);
@@ -62,7 +62,7 @@ public class InteractionUrlGrapService {
 
 	public void grap() {
 		targetList = targetService.findAll();
-		redisAPI = new RedisAPI(shardedJedisPool);
+		redisAPI = new RedisAPI(shardedJedisPool1);
 		for (Target target : targetList) {
 			if (target.getMissionId() == CommonParameter.INTERACTION_URL) {
 				targetQueue.offer(target);

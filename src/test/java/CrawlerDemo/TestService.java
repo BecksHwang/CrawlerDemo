@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import com.becks.entity.StockLabel;
 import com.becks.entity.Target;
 import com.becks.entity.User;
 import com.becks.service.NewsService;
+import com.becks.service.StockInfoService;
 import com.becks.service.StockLabelService;
 import com.becks.service.TargetService;
 import com.becks.service.UserService;
@@ -36,6 +38,8 @@ import redis.clients.jedis.ShardedJedisPool;
 @Transactional
 public class TestService {
 
+	private static final Logger LOGGER = Logger.getLogger(TestService.class);
+
 	@Autowired
 	private UserService userService;
 
@@ -47,14 +51,16 @@ public class TestService {
 
 	@Autowired
 	private StockLabelService stockLabelService;
+	
+	@Autowired
+	private StockInfoService StockInfoService;
 
 	@Resource
-	private ShardedJedisPool shardedJedisPool;
+	private ShardedJedisPool shardedJedisPool1;
 
 	@Resource
 	private ShardedJedisPool shardedJedisPool2;
-
-	@SuppressWarnings("unused")
+	
 	@Test
 	public void save() {
 		User user = new User();
@@ -125,15 +131,13 @@ public class TestService {
 	@Test
 	public void redisTest() throws Exception {
 
-		ShardedJedis jedis1 = shardedJedisPool.getResource();
-		jedis1.set("shardedJedisPool2", "shardedJedisPool2");
-		shardedJedisPool.returnResourceObject(jedis1);
-
-		/*
-		 * ShardedJedis jedis = shardedJedisPool2.getResource();
-		 * jedis.set("shardedJedisPool2", "shardedJedisPool2");
-		 * shardedJedisPool2.returnResourceObject(jedis);
-		 */
+		ShardedJedis jedis1 = shardedJedisPool1.getResource();
+		jedis1.sadd("shardedJedisPool1", "shardedJedisPool11");
+		shardedJedisPool1.returnResourceObject(jedis1);
+		
+		ShardedJedis jedis2 = shardedJedisPool2.getResource();
+		jedis2.sadd("shardedJedisPool2", "shardedJedisPool22");
+		shardedJedisPool2.returnResourceObject(jedis2);
 
 	}
 	
