@@ -13,7 +13,6 @@ import com.becks.service.ThsggsdUrlGrapService;
 import com.becks.util.GrapMethodUtil;
 import com.becks.util.StringUtil;
 
-
 public class testJs {
 	static Logger logger = Logger.getLogger(ThsggsdUrlGrapService.class);
 
@@ -42,7 +41,7 @@ public class testJs {
 			String urlstr = url;
 			String html = null;
 			html = new com.becks.util.GrapMethodUtil().getStringByUrl(urlstr);
-			//html = new SpecialGrapMethodUtil().getStringByUrlChrome(urlstr);
+			// html = new SpecialGrapMethodUtil().getStringByUrlChrome(urlstr);
 			System.out.println("*******************抓取中*******************");
 			// System.out.println(html);
 			if (com.becks.util.StringUtil.isNullOrEmpty(html)) {
@@ -50,10 +49,8 @@ public class testJs {
 				continue;
 			}
 			String content = html;
-			
-			String startTag = "<div class="+ "\"" + "temp01" + "\"" + ">";//"<div class="+ "\"" + "temp01" + "\"" + ">"
-			String endTag = "<div class=" + "\"" + "listdh"+ "\"" + ">";
-
+			String startTag = "<div class=" + "\"" + "temp01" + "\"" + ">";
+			String endTag = "<div class=" + "\"" + "listdh" + "\"" + ">";
 			int begin;
 			if ((StringUtil.isNullOrEmpty(startTag)) || (content.indexOf(startTag) == -1))
 				begin = 0;
@@ -66,12 +63,7 @@ public class testJs {
 				end = content.indexOf(endTag);
 			}
 			content = content.substring(begin, end);
-			
-			
 			Document document = Jsoup.parse(content);
-			
-			
-			
 			List<Element> elementList = document.getElementsByTag("a");
 			for (int e = 0; e < elementList.size(); e++) {
 				Element element = (Element) elementList.get(e);
