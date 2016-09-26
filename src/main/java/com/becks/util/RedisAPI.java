@@ -13,8 +13,6 @@ import redis.clients.jedis.ShardedJedisPool;
 public class RedisAPI {
 	
 	private static ShardedJedisPool jedisPool;
-	
-	
 
 	@SuppressWarnings("static-access")
 	public RedisAPI(ShardedJedisPool shardedJedisPool) {
@@ -34,10 +32,10 @@ public class RedisAPI {
 	}
 
 	/**
-	 * 获取数据
+	 * 获取key对应的value数据
 	 * 
 	 * @param key
-	 * @return
+	 * @return String
 	 */
 	public static String get(String key) {
 		String value = null;
@@ -57,10 +55,10 @@ public class RedisAPI {
 	}
 
 	/**
-	 * 获取数据
+	 * 判断value是否已经存在于key
 	 * 
-	 * @param key
-	 * @return
+	 * @param key,value
+	 * @return Boolean
 	 */
 	public static Boolean get(String key, String value) {
 		Boolean isExists = false;
@@ -80,7 +78,6 @@ public class RedisAPI {
 	}
 
 	public static void set(String key, String value) {
-
 		ShardedJedis jedis = null;
 		try {
 			jedis = jedisPool.getResource();
