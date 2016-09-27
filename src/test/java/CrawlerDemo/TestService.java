@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.becks.config.SinaConfig;
 import com.becks.entity.News;
 import com.becks.entity.StockLabel;
 import com.becks.entity.Target;
@@ -34,7 +35,7 @@ import redis.clients.jedis.ShardedJedisPool;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:spring.xml", "classpath:spring-hibernate.xml",
-		"classpath:spring-redis.xml" })
+		"classpath:spring-redis.xml", "classpath:spring-env.xml" })
 @Transactional
 public class TestService {
 
@@ -51,7 +52,7 @@ public class TestService {
 
 	@Autowired
 	private StockLabelService stockLabelService;
-	
+
 	@Autowired
 	private StockInfoService StockInfoService;
 
@@ -60,7 +61,10 @@ public class TestService {
 
 	@Resource
 	private ShardedJedisPool shardedJedisPool2;
-	
+
+	@Autowired
+	private SinaConfig sinaConfig;
+
 	@Test
 	public void save() {
 		User user = new User();
@@ -134,13 +138,13 @@ public class TestService {
 		ShardedJedis jedis1 = shardedJedisPool1.getResource();
 		jedis1.sadd("shardedJedisPool1", "shardedJedisPool11");
 		shardedJedisPool1.returnResourceObject(jedis1);
-		
+
 		ShardedJedis jedis2 = shardedJedisPool2.getResource();
 		jedis2.sadd("shardedJedisPool2", "shardedJedisPool22");
 		shardedJedisPool2.returnResourceObject(jedis2);
 
 	}
-	
+
 	@Test
 	public void redisTestSetex() throws Exception {
 		ShardedJedis jedis1 = shardedJedisPool1.getResource();
@@ -150,5 +154,10 @@ public class TestService {
 		System.out.println("after 12s key01:" + jedis1.get("key01"));
 		shardedJedisPool1.returnResourceObject(jedis1);
 	}
-	
+
+	@Test
+	public void sinaConfigTest() throws Exception {
+		System.out.println(sinaConfig.getSinaUrl());
+	}
+
 }

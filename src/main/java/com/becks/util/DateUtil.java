@@ -32,6 +32,11 @@ public class DateUtil {
 		return str;
 	}
 
+	public static Long getNowTimeStamp() {
+		Calendar todayStart = Calendar.getInstance();
+		return todayStart.getTime().getTime();
+	}
+	
 	public static Long getTodayTimeStamp() {
 		Calendar todayStart = Calendar.getInstance();
 		todayStart.set(Calendar.HOUR_OF_DAY, 23);
