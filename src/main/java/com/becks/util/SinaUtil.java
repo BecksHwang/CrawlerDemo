@@ -13,6 +13,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.becks.config.SinaConfig;
 import com.becks.entity.News;
@@ -24,6 +25,7 @@ import net.sf.json.JSONObject;
  *
  * @author BecksHwang
  */
+@Component
 public class SinaUtil {
 	static Logger logger = Logger.getLogger(SinaUtil.class);
 

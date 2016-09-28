@@ -10,7 +10,7 @@
 
 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location">
-			<value>/sinaconfig.properties</value>
+			<value>classpath:sinaconfig.properties</value>
 		</property>
 		<property name="fileEncoding" value="utf-8" />
 	</bean>

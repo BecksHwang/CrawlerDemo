@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+
+import javax.annotation.Resource;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -24,8 +27,11 @@ import com.becks.entity.Target;
 import com.becks.util.GrapMethodUtil;
 import com.becks.util.StringUtil;
 
+import redis.clients.jedis.ShardedJedisPool;
+
 import com.becks.common.CommonParameter;
 import com.becks.util.RedisAPI;
+import com.becks.util.SinaUtil;
 
 /**
  * @Description: Common任务抓取程序
@@ -39,16 +45,24 @@ public class CommonUrlGrapService {
 	private TargetService targetService;
 	@Autowired
 	private NewsService newsService;
+	@Resource
+	private ShardedJedisPool shardedJedisPool1;
+	@Autowired
+	private SinaUtil sinaUtil;
+	
+	
 	static List<Target> targetList = new ArrayList<>();
 	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(20);
+	private RedisAPI redisAPI = null;
 
 	public CommonUrlGrapService() {
 
 	}
 
+	@SuppressWarnings("static-access")
 	public boolean missionCheckCode(String title, String url, Long targetId) {
 		String unique = title + "-" + url + "-" + targetId;
-		if (RedisAPI.get(CommonParameter.MISSION_CHECKCODE, unique) || newsService.isExits(targetId, title, url)) {
+		if (redisAPI.get(CommonParameter.MISSION_CHECKCODE, unique) || newsService.isExits(targetId, title, url)) {
 			return true;
 		} else {
 			return false;
@@ -57,6 +71,7 @@ public class CommonUrlGrapService {
 
 	public void grap() {
 		targetList = targetService.findAll();
+		redisAPI = new RedisAPI(shardedJedisPool1);
 		for (Target target : targetList) {
 			if (target.getMissionId() == CommonParameter.COMMON_URL) {
 				targetQueue.offer(target);
@@ -91,9 +106,9 @@ public class CommonUrlGrapService {
 			}
 		}
 
+		@SuppressWarnings("static-access")
 		protected void performTarget(Target target) {
-			logger.error(
-					"抓取网址：" + "targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:" + target.getUrl());
+			logger.error("抓取网址：" + "targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:" + target.getUrl());
 			try {
 				String urlstr = target.getUrl();
 				if (StringUtil.isNullOrEmpty(urlstr)) {
@@ -163,8 +178,9 @@ public class CommonUrlGrapService {
 							logger.error("来源：targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:"
 									+ target.getUrl());
 							String unique = title + "-" + href + "-" + target.getId();
-							RedisAPI.set(CommonParameter.MISSION_CHECKCODE, unique);
+							redisAPI.set(CommonParameter.MISSION_CHECKCODE, unique);
 							System.gc();
+							sinaUtil.pushSina(news);
 						}
 					}
 				}

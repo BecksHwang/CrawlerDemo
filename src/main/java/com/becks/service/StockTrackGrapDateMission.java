@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 /**
- * @Description: 个股追踪监测抓取总任务
+ * @Description: 抓取总任务
  * @author BecksHwang
  * @date
  */
@@ -50,11 +50,11 @@ public class StockTrackGrapDateMission implements ApplicationListener {
 			// 确保抓取任务只启动一次
 			isStart = false;
 			// 启动common网址抓取任务
-//			commonUrlGrapService.grap();
+			commonUrlGrapService.grap();
 //			// 启动同花顺公告速递网址抓取任务
 //			thsggsdUrlGrapService.grap();
 //			// 启动全景网互动精华网址抓取任务
-			interactionUrlGrapService.grap();
+//			interactionUrlGrapService.grap();
 //			// 启动金融界公告速递网址抓取任务
 //			jrjggsdUrlGrapService.grap();
 //			// 启动和讯公司网址抓取任务
