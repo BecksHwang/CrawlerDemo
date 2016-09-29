@@ -19,8 +19,8 @@ function getJson(url,time,func){
 
 // 左边！！
 function initGetJson(){
-	var url = '/CrawlerDemo/news/getNews.do';  //家蓓的url
-	//var url = 'js/myData.json';  //安安的url
+	var url = '/CrawlerDemo/news/getNews.do';  //线上的url
+	//var url = 'js/myData.json';  //测试的url
 	var time = null;
 	getJson(url,time,initData);
 };
@@ -44,9 +44,9 @@ function refreshGetJson(){
 	vmIndex = vm1.items.length - 1;  //根据最后一个时间 拿新增的数据
 	var time = vm1.items[vmIndex].pickTime;
 	// var time = vm1.items[0].pickTime;
-	var options = '/CrawlerDemo/news/getNews.do';  //家蓓的url
+	var options = '/CrawlerDemo/news/getNews.do';  //线上的url
 	var url = options + '?' + 'pickTime' + '=' + time;
-	//var url = 'js/myData2.json';  //安安的url
+	//var url = 'js/myData2.json';  //测试的url
 	getJson(url,time,refreshData);
 }
 function refreshData(data){
@@ -65,8 +65,8 @@ setInterval(refreshGetJson,5000);
 
 // 右边！！
 function initGetJson1(){
-	var url = '/CrawlerDemo/interaction/getInteractions.do';  //家蓓的url
-	//var url = 'js/myDa.json';  //安安的url
+	var url = '/CrawlerDemo/interaction/getInteractions.do';  //线上的url
+	//var url = 'js/myDa.json';  //测试的url
 	var time = null;
 	getJson(url,time,initData1);
 };
@@ -92,9 +92,9 @@ function refreshGetJson1(){
 	vmIndex = vm2.items2.length - 1;  //根据最后一个时间 拿新增的数据
   // console.log(vmIndex)
 	var time = vm2.items2[vmIndex].pickTime;
-	var options = '/CrawlerDemo/interaction/getInteractions.do';  //家蓓的url
+	var options = '/CrawlerDemo/interaction/getInteractions.do';  //线上的url
 	var url = options + '?' + 'pickTime' + '=' + time;
-	//var url = 'js/myDa2.json';  //安安的url
+	//var url = 'js/myDa2.json';  //测试的url
 	getJson(url,time,refreshData1);
 }
 function refreshData1(data){
