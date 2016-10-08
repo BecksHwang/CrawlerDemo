@@ -55,10 +55,6 @@ public class CommonUrlGrapService {
 	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(20);
 	private RedisAPI redisAPI = null;
 
-	public CommonUrlGrapService() {
-
-	}
-
 	@SuppressWarnings("static-access")
 	public boolean missionCheckCode(String title, String url, Long targetId) {
 		String unique = title + "-" + url + "-" + targetId;
