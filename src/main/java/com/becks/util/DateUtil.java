@@ -1,7 +1,6 @@
 package com.becks.util;
 
 import java.text.DateFormat;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -36,7 +35,7 @@ public class DateUtil {
 		Calendar todayStart = Calendar.getInstance();
 		return todayStart.getTime().getTime();
 	}
-	
+
 	public static Long getTodayTimeStamp() {
 		Calendar todayStart = Calendar.getInstance();
 		todayStart.set(Calendar.HOUR_OF_DAY, 23);
@@ -45,7 +44,7 @@ public class DateUtil {
 		todayStart.set(Calendar.MILLISECOND, 0);
 		return todayStart.getTime().getTime();
 	}
-	
+
 	public static Long getTodayZeroTimeStamp() {
 		Calendar todayStart = Calendar.getInstance();
 		todayStart.set(Calendar.HOUR_OF_DAY, 00);
