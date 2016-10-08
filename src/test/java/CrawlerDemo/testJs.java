@@ -4,17 +4,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import com.becks.service.ThsggsdUrlGrapService;
 import com.becks.util.GrapMethodUtil;
 import com.becks.util.StringUtil;
 
 public class testJs {
-	static Logger logger = Logger.getLogger(ThsggsdUrlGrapService.class);
 
 	public static void main(String[] args) throws MalformedURLException {
 
