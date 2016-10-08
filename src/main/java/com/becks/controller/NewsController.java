@@ -34,7 +34,6 @@ public class NewsController {
 
 	@RequestMapping("/getNews")
 	public @ResponseBody List<News> getNews(News newsq) {
-		//logger.error("查询数据显示到页面！");
 		News news = newsq;
 		List<News> result = null;
 		if (news.getPickTime() == null) {

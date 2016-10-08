@@ -59,8 +59,6 @@ public class InteractionUrlGrapService {
 		}
 	}
 
-	
-
 	public void grap() {
 		targetList = targetService.findAll();
 		redisAPI = new RedisAPI(shardedJedisPool1);
@@ -91,7 +89,7 @@ public class InteractionUrlGrapService {
 					targetQueue.offer((Target) wrf.get());
 				}
 				try {
-					Thread.sleep(2000l);
+					Thread.sleep(10000l);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

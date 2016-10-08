@@ -28,7 +28,6 @@ public class InteractionController {
 
 	@RequestMapping("/getInteractions")
 	public @ResponseBody List<Interaction> getInteractions(Interaction interaction) {
-		logger.error("查询数据显示到页面！");
 		List<Interaction> result = null;
 		if (interaction.getPickTime() == null) {
 			interaction.setPickTime(new Date());

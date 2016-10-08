@@ -95,7 +95,7 @@ public class CommonUrlGrapService {
 					targetQueue.offer((Target) wrf.get());
 				}
 				try {
-					Thread.sleep(2000l);
+					Thread.sleep(10000l);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -108,6 +108,9 @@ public class CommonUrlGrapService {
 			try {
 				String urlstr = target.getUrl();
 				if (StringUtil.isNullOrEmpty(urlstr)) {
+					return;
+				}
+				if (StringUtil.isNullOrEmpty(target.getType())) {
 					return;
 				}
 				String html = null;
