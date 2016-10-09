@@ -84,6 +84,7 @@ public class BaseDaoImpl<T> {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public T get(Class<T> entityClass, Long id) throws Exception {
 		Object retObj = null;
 		Session session = sessionFactory.openSession();
@@ -100,6 +101,7 @@ public class BaseDaoImpl<T> {
 		return (T) retObj;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public List getListByHql(String hql, HqlPage page) {
 		List retList = null;
 		Session session = sessionFactory.openSession();
@@ -154,6 +156,7 @@ public class BaseDaoImpl<T> {
 		return retList;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public T getOneHql(String hql) throws Exception {
 		List list = getListByHql(hql, null);
 		if (list == null || list.size() == 0) {

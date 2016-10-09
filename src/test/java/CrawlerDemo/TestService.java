@@ -19,7 +19,6 @@ import com.becks.entity.StockLabel;
 import com.becks.entity.Target;
 import com.becks.entity.User;
 import com.becks.service.NewsService;
-import com.becks.service.StockInfoService;
 import com.becks.service.StockLabelService;
 import com.becks.service.TargetService;
 import com.becks.service.UserService;
@@ -39,6 +38,7 @@ import redis.clients.jedis.ShardedJedisPool;
 @Transactional
 public class TestService {
 
+	@SuppressWarnings("unused")
 	private static final Logger LOGGER = Logger.getLogger(TestService.class);
 
 	@Autowired
@@ -53,9 +53,6 @@ public class TestService {
 	@Autowired
 	private StockLabelService stockLabelService;
 
-	@Autowired
-	private StockInfoService StockInfoService;
-
 	@Resource
 	private ShardedJedisPool shardedJedisPool1;
 
@@ -65,6 +62,7 @@ public class TestService {
 	@Autowired
 	private SinaConfig sinaConfig;
 
+	@SuppressWarnings("unused")
 	@Test
 	public void save() {
 		User user = new User();

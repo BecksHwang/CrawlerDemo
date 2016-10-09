@@ -44,6 +44,7 @@ public class NewsDaoImpl extends BaseDaoImpl<News> {
 		return Newss;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<News> getOldNewsByGrabTime(News news) throws Exception {
 		StringBuffer hql = new StringBuffer("from News ");
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -52,6 +53,7 @@ public class NewsDaoImpl extends BaseDaoImpl<News> {
 		return this.getListByHql(hql.toString(), new HqlPage());
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<News> getNewNewsByGrabTime(News news) throws Exception {
 		StringBuffer hql = new StringBuffer("from News ");
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -117,6 +119,7 @@ public class NewsDaoImpl extends BaseDaoImpl<News> {
 		return sb;
 	}
 
+	@SuppressWarnings({ "static-access", "unchecked" })
 	public Page queryPage(Page page, NewsQueryVo qVo) {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Page resultPage = new Page();

@@ -114,6 +114,7 @@ public class SendUrlUtil {
 		return jsonObject;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public static String getHtml(String address, HashMap headParam) throws Exception {
 		HttpClient httpClient = new HttpClient();
 		/* 连接超时 */
@@ -219,6 +220,7 @@ public class SendUrlUtil {
 	public static String getHtmlByJousp(String address) throws IOException {
 		return Jsoup.connect(address).get().toString();
 	}
+
 	public static JSONObject returnJsonObjectForJRJGGSD(String url, HashMap<String, String> hm) {
 		HttpClient client = new HttpClient();
 

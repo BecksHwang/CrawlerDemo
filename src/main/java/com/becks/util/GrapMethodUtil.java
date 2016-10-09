@@ -74,6 +74,7 @@ public class GrapMethodUtil {
 	 * @param method
 	 * @return
 	 */
+	@SuppressWarnings("static-access")
 	public String urlGetString(String strURL, String encode) {
 		encode = encode == null ? "gb2312" : encode;
 		StringBuffer stringBuffer = new StringBuffer("");
@@ -138,6 +139,7 @@ public class GrapMethodUtil {
 	 * @param strURL
 	 * @return
 	 */
+	@SuppressWarnings("static-access")
 	public String getStringByUrl(String strURL) {
 		StringBuffer stringBuffer = new StringBuffer("");
 		InputStream inputStream = null;
@@ -180,6 +182,7 @@ public class GrapMethodUtil {
 	 * @param strURL
 	 * @return
 	 */
+	@SuppressWarnings("static-access")
 	public String getStringByUrlHeXun(String strURL) {
 		StringBuffer stringBuffer = new StringBuffer("");
 		InputStream inputStream = null;

@@ -37,10 +37,12 @@ public class InteractionDaoImpl extends BaseDaoImpl<Interaction> {
 
 	@SuppressWarnings("unchecked")
 	public List<Interaction> findAll() {
-		List<Interaction> Interactions = this.getCurrentSession().createQuery("from Interaction").setCacheable(true).list();
+		List<Interaction> Interactions = this.getCurrentSession().createQuery("from Interaction").setCacheable(true)
+				.list();
 		return Interactions;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Interaction> getOldNewsByGrabTime(Interaction interaction) throws Exception {
 		StringBuffer hql = new StringBuffer("from Interaction ");
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -49,6 +51,7 @@ public class InteractionDaoImpl extends BaseDaoImpl<Interaction> {
 		return this.getListByHql(hql.toString(), new HqlPage());
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Interaction> getNewNewsByGrabTime(Interaction interaction) throws Exception {
 		StringBuffer hql = new StringBuffer("from Interaction ");
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

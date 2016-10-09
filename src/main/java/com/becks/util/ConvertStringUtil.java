@@ -8,6 +8,7 @@ package com.becks.util;
  */
 public class ConvertStringUtil {
 	// 转换sql语句
+	@SuppressWarnings("rawtypes")
 	public static String getSelectHqlByClass(Class clz) {
 		return "from " + clz.getName() + " where 1 = 1 ";
 	}

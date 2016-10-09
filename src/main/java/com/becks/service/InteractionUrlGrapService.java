@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.becks.common.CommonParameter;
-import com.becks.config.SinaConfig;
 import com.becks.entity.Interaction;
 import com.becks.entity.Target;
 import com.becks.util.GrapMethodUtil;
@@ -30,6 +29,7 @@ import com.becks.util.RedisAPI;
 import com.becks.util.StringUtil;
 
 import redis.clients.jedis.ShardedJedisPool;
+
 /**
  * @Description: 全景网互动精华任务抓取程序
  * @author BecksHwang
@@ -44,14 +44,14 @@ public class InteractionUrlGrapService {
 	private InteractionService interactionService;
 	@Resource
 	private ShardedJedisPool shardedJedisPool1;
-	
+
 	static List<Target> targetList = new ArrayList<>();
 	static BlockingQueue<Target> targetQueue = new ArrayBlockingQueue<>(5);
 	private RedisAPI redisAPI = null;
 
 	@SuppressWarnings("static-access")
 	public boolean missionCheckCode(String ask, String answer) {
-		String unique = ask + "-" + answer ;
+		String unique = ask + "-" + answer;
 		if (redisAPI.get(CommonParameter.MISSION_CHECKCODE_ITRCT, unique) || interactionService.isExits(ask, answer)) {
 			return true;
 		} else {
@@ -98,7 +98,8 @@ public class InteractionUrlGrapService {
 
 		@SuppressWarnings("static-access")
 		protected void performTarget(Target target) {
-			logger.error("抓取网址：" + "targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:" + target.getUrl());
+			logger.error(
+					"抓取网址：" + "targetId:" + target.getId() + "-名称：" + target.getName() + "-URL:" + target.getUrl());
 			try {
 				String urlstr = target.getUrl();
 				if (StringUtil.isNullOrEmpty(urlstr)) {
