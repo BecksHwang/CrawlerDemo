@@ -10,9 +10,9 @@ import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 
-public class ExportWordUtil {
+public class OfficeWordUtil {
 	public static void main(String[] args) {
-		ExportWordUtil test = new ExportWordUtil();
+		OfficeWordUtil test = new OfficeWordUtil();
 		String filePath = "E:\\java导入word表格.doc";
 		// String filePath = "";
 		test.testWord(filePath);
